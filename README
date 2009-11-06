@@ -4,36 +4,26 @@ Chapitre List:
 * Prét
 R Revisé
 
-- TEXT
 - Abstract
 * Introduction 
 - Conclusion
-
-- FUTURE
-- other ideas
-
-- ACL
-- Explanation
-- Algorithm
+- Future de les ACL
+- Explanation sur les ACL
+* Explanation du metode traditional
+* Algorithm (it need to have the name changed)
 - Extended Attributtes 
-
-- USING
 - File System
 - Implementation
 - Kernel
 - Installing
 - Further on ubuntu
 - Exemple 
-
-- IMPLEMENTATION
 - ext[2,3]
 - jfs
 - xfs
 - samba
 - nfs
 - reiser
-
-- PROBLEMS
 - Performance
 - Compatibility
 - Complexity

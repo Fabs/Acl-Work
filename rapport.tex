@@ -3,6 +3,9 @@
 %Packages
 \usepackage[francais]{babel}
 \usepackage[utf8]{inputenc} 
+\usepackage{algorithmic}
+\usepackage{algorithm}
+
 
 %Info
 \title{\textbf{Controle de Accés e le POSIX Access Control Lists(ACL)} \\ NE410 - Administration de Systéme }
@@ -30,29 +33,104 @@ Cette article presenté une exposition sur les ACL POSIX, ces mode de fonctionne
 
 \section*{Les systèmes POSIX}
 
-Le modele traditional POSIX offre trois group de utilisateur qui sont le propriétaire, le group e l'autres. Chaque group a une octet que indique les permission de lecture (\emph{r}ead), écrire (\emph{w}rite) et execution (e\emph{x}ecute).   
-% r w x
-% uid
-% root privileges
-% Set User Id, Set Group Id, and Sticky
+%What is posix% 
+% Pendant le conception de la famille de "padron" POSIX 1003.1, le besoin de padroniser le domaine de sécurite  a été consideré dans les document 1003.1e (\emph{System Application Programming Interface}) and 1003.2c (\emph{Shell and Utilities}), "entretanto", la primiere approximation de ce sujet était trop "ambiciosa"
+% 
+% A need for standardizing other security relevant areas in addition to just ACLs was also perceived, so eventually a working group was formed to define security extensions within the POSIX 1003.1 family of standards. The document numbers 1003.1e (System Application Programming Interface) and 1003.2c (Shell and Utilities) were assigned for the working group's specifications. These documents are referred to as POSIX.1e in the remainder of this paper. The working group was focusing on the following extensions to POSIX.1: Access Control Lists (ACL), Audit, Capability, Mandatory Access Control (MAC), and Information Labeling.
 
-%What is posix
+
 %the drafts that resulted in ACL
 
 \subsection*{Système Tradicional}
 
-%comment ça marche
+%Les groups e les permission
+Le modele traditional POSIX offre trois group de utilisateur qui sont le propriétaire, le group e les autres. Chaque group a une octet que indique les permission de lecture (\textbf{r}ead), écrire (\textbf{w}rite) et execution (e\textbf{x}ecute). La premiere classe fournit les permission pour le utilisateur que rempli le role de propriétaire, ensuite, vien les droits pour le groupe principal du propriétaire enfim les droites pour touts les autres utilisateurs. 
+ 
+%Explication simple
+Après les trois octets peut venir le \emph{Set User Id}, \emph{Set Group Id} et \emph{Sticky bit}, lequelles sont utilisé dans certain cases. Il faut faire attention avec le \emph{Sticky Bit}, il permit les utilisateur normale d'executer les utilitaire comment le administrateur(\emph{root}), par contre, quelque manque de sècurite peut compromettre le système entiere.
+
+%Le droit du root
+Seulement le \emph{root} peut créer les groups e changer les association de groupes. Celui-lá que aussi peut changer les propriétaire.  
 
 \subsection*{Les ACL}
 
-%
+%L'histoire
 
+En Janvier de 1998\cite{aclsuse}
+
+
+
+%Qu'es-ce qu'est?
+%Comment ça marche
 
 En Janvier de 1998\cite{aclsuse}
 
 Pour remédier à ce limitation "trusted" UNIX systems comme Trusted Solaris, Trusted Irix, Trusted AIX ont été developer avec 
 
 Dans une modèle de de sécurise ACL, si quelque agent faire une requête pour acceder aux donnés, il faut consulte les ACL pour une entrée que permetre l'operation demandé.    
+
+
+
+%changer le titre
+\begin{algorithm}
+\caption{Verifie se une utilisateur peut ou ne peut pas acceder une objet du système de fichier}
+\label{algacl}
+\begin{algorithmic}
+\IF{the user ID of the process is the owner}
+	\STATE the owner entry determines access
+\ELSIF{the user ID of the process matches the qualifier in one of the named user entries}
+	\STATE this entry determines access 
+\ELSIF{one of the group IDs of the process matches the owning group and the owning group entry contains the requested permissions} 
+	\STATE this entry determines access
+\ELSIF{one of the group IDs of the process matches the qualifier of one of the named group entries and this entry contains the requested permissions}
+	\STATE this entry determines access
+ 
+\ELSIF{one of the group IDs of the process matches the owning group or any of the named group entries, but neither the owning group entry nor any of the matching named group entries contains the requested permissions} 
+\STATE this determines that access is denied
+
+\ELSE
+	\STATE the other entry determines access.
+\ENDIF
+ 
+
+\IF{the matching entry resulting from this selection is the owner or other entry and it contains the requested permissions}
+	\STATE access is granted 
+\ELSIF{the matching entry is a named user, owning group, or named group entry and this entry contains the requested permissions and the mask entry also contains the requested permissions (or there is no mask entry)}
+	\STATE access is granted
+ 
+\ELSE
+	\STATE access is denied.
+\ENDIF
+\end{algorithmic}
+\end{algorithm}
+
+
+%\begin{verbatim} 
+% 	Si
+% 		le ID d'utilisateur du process est le ID du proptieter, la entrée \textbf{owner} determines l'acess
+% 	sinon
+% 		le ID d'utilisateur du process es l'egal de le qualifier dans quelque entre de \textbf{utilisateur nome}, cette entrée determine l'acess
+% 	else if
+% 	    one of the group IDs of the process matches the owning group and the owning group entry contains the requested permissions, this entry determines access
+% 
+% 	else if
+% 	    one of the group IDs of the process matches the qualifier of one of the named group entries and this entry contains the requested permissions, this entry determines access
+% 
+% 	else if
+% 	    one of the group IDs of the process matches the owning group or any of the named group entries, but neither the owning group entry nor any of the matching named group entries contains the requested permissions, this determines that access is denied
+% 
+% 	else
+% 	    the other entry determines access.
+% 
+% 	If
+% 	    the matching entry resulting from this selection is the owner or other entry and it contains the requested permissions, access is granted
+% 
+% 	else if
+% 	    the matching entry is a named user, owning group, or named group entry and this entry contains the requested permissions and the mask entry also contains the requested permissions (or there is no mask entry), access is granted
+% 
+% 	else
+% 	    access is denied.
+% \end{verbatim}
 
 
 %----------------------------------------------------------------------------
