@@ -31,14 +31,15 @@ Ce mode tradicional est assez simple et capable de adresser les problemen plus f
 % Le reference aux texte originale
 Cette article presenté une exposition sur les ACL POSIX, ces mode de fonctionnement, ces clés de succes et désavantages. Le texte est fortement basé en l'article de Andreas Gruembacher\cite{aclsuse} dont a été dans l'equipe que as ajouté le support aux ACL dans le noyaux linux pour les système de fichier ext2 et ext3, lequel est le système de fichier plus utilisé dans les monde UNIX.
 
-\section*{Les systèmes POSIX}
-
+\section*{Le POSIX 1003.1}
 
 %regarder bien le passer
-Après savoir la necessite de regler sur le domaine de sécurise et non seulement les ACL, une groupe a était forme pendant la definition de la famille de patron POSIX 1003.1. Les premieres documents posix qui ont été consideré ces question étais les document 1003.1e (\emph{System Application Programming Interface}) et 1003.2c (\emph{Shell and Utilities}), cependant, la primiere approximation de ce sujet était trop ambitieuse. Les groupe responsable pour le patronisation avait centre ces effort dans une tas de choses comment \emph{Access Control Lists} (ACL), \emph{Audit}, \emph{Capability},\emph{ Mandatory Access Control }(MAC), et \emph{Information Labeling}\cite{aclsuse}.
+Après savoir la necessite de regler sur le domaine de sécurise et non seulement les ACL, une groupe a était forme pendant la definition de la famille de patron POSIX 1003.1. Les premieres documents POSIX qui ont été consideré ces question étions les document 1003.1e (\emph{System Application Programming Interface}) et 1003.2c (\emph{Shell and Utilities}), cependant, la primiere approximation de ce sujet était trop ambitieuse. Les groupe responsable pour le patronisation avait centre ces effort dans une tas assez grande de choses, lesquelles  comprenant \emph{Access Control Lists} (ACL), \emph{Audit}, \emph{Capability},\emph{ Mandatory Access Control }(MAC), et \emph{Information Labeling}\cite{aclsuse}.
 
+En Janvier de 1998\cite{aclsuse} 
 
 %the drafts that resulted in ACL
+Les base des ACL sont lancé sur le systeme tradicional present usualement dans tous les systeme UNIX, allors, avant de preciser sur les ACL on parlerais du modele tradicional.
 
 \subsection*{Système Tradicional}
 
@@ -54,9 +55,6 @@ Seulement le \emph{root} peut créer les groups e changer les association de gro
 \subsection*{Les ACL}
 
 %L'histoire
-
-En Janvier de 1998\cite{aclsuse}
-
 
 
 %Qu'es-ce qu'est?
@@ -131,6 +129,15 @@ Dans une modèle de de sécurise ACL, si quelque agent faire une requête pour a
 % 	    access is denied.
 % \end{verbatim}
 
+\section*{Linux}
+
+%A voir maintenant
+\subsection*{ACL Implementation in Linux}
+% Patches that implement POSIX 1003.1e draft 17 ACLs have been available for various versions of Linux for several years now. They were added to version 2.5.46 of the Linux kernel in November 2002. Current Linux distributions are still based on the 2.4.x stable kernels series. SuSE and the United Linux consortium have integrated the 2.4 kernel ACL patches earlier than others, so their current products offer the most complete ACL support available for Linux to date. Other vendors apparently are still reluctant to make that important change, but experimental versions are expected to be available later this year.
+% 
+% The Linux getfacl and setfacl command line utilities do not strictly follow POSIX 1003.2c draft 17, which shows mostly in the way they handle default ACLs. See section 6.
+% 
+% At the time of this writing, ACL support on Linux is available for the Ext2, Ext3, IBM JFS, ReiserFS, and SGI XFS file systems. Solaris-compatible ACL support for NFS version 3 exists since March 3, 2003.
 
 %----------------------------------------------------------------------------
 
