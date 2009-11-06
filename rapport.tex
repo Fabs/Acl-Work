@@ -36,7 +36,7 @@ Cette article presenté une exposition sur les ACL POSIX, ces mode de fonctionne
 %regarder bien le passer
 Après savoir la necessite de regler sur le domaine de sécurise et non seulement les ACL, une groupe a était forme pendant la definition de la famille de patron POSIX 1003.1. Les premieres documents POSIX qui ont été consideré ces question étions les document 1003.1e (\emph{System Application Programming Interface}) et 1003.2c (\emph{Shell and Utilities}), cependant, la primiere approximation de ce sujet était trop ambitieuse. Les groupe responsable pour le patronisation avait centre ces effort dans une tas assez grande de choses, lesquelles  comprenant \emph{Access Control Lists} (ACL), \emph{Audit}, \emph{Capability},\emph{ Mandatory Access Control }(MAC), et \emph{Information Labeling}\cite{aclsuse}.
 
-En Janvier de 1998\cite{aclsuse} 
+En Janvier de 1998\cite{aclsuse} le financeament était fini, par contre, le travaille n'était pas prés. De toute façon le diseptieme brouillon a été publique quand meme\cite{posix17}.  
 
 %the drafts that resulted in ACL
 Les base des ACL sont lancé sur le systeme tradicional present usualement dans tous les systeme UNIX, allors, avant de preciser sur les ACL on parlerais du modele tradicional.
@@ -102,37 +102,19 @@ Dans une modèle de de sécurise ACL, si quelque agent faire une requête pour a
 \end{algorithm}
 
 
-%\begin{verbatim} 
-% 	Si
-% 		le ID d'utilisateur du process est le ID du proptieter, la entrée \textbf{owner} determines l'acess
-% 	sinon
-% 		le ID d'utilisateur du process es l'egal de le qualifier dans quelque entre de \textbf{utilisateur nome}, cette entrée determine l'acess
-% 	else if
-% 	    one of the group IDs of the process matches the owning group and the owning group entry contains the requested permissions, this entry determines access
-% 
-% 	else if
-% 	    one of the group IDs of the process matches the qualifier of one of the named group entries and this entry contains the requested permissions, this entry determines access
-% 
-% 	else if
-% 	    one of the group IDs of the process matches the owning group or any of the named group entries, but neither the owning group entry nor any of the matching named group entries contains the requested permissions, this determines that access is denied
-% 
-% 	else
-% 	    the other entry determines access.
-% 
-% 	If
-% 	    the matching entry resulting from this selection is the owner or other entry and it contains the requested permissions, access is granted
-% 
-% 	else if
-% 	    the matching entry is a named user, owning group, or named group entry and this entry contains the requested permissions and the mask entry also contains the requested permissions (or there is no mask entry), access is granted
-% 
-% 	else
-% 	    access is denied.
-% \end{verbatim}
-
 \section*{Linux}
 
 %A voir maintenant
 \subsection*{ACL Implementation in Linux}
+
+%noyaux patches
+
+% getfacl
+
+%setfacl
+
+%systemes de fichier
+
 % Patches that implement POSIX 1003.1e draft 17 ACLs have been available for various versions of Linux for several years now. They were added to version 2.5.46 of the Linux kernel in November 2002. Current Linux distributions are still based on the 2.4.x stable kernels series. SuSE and the United Linux consortium have integrated the 2.4 kernel ACL patches earlier than others, so their current products offer the most complete ACL support available for Linux to date. Other vendors apparently are still reluctant to make that important change, but experimental versions are expected to be available later this year.
 % 
 % The Linux getfacl and setfacl command line utilities do not strictly follow POSIX 1003.2c draft 17, which shows mostly in the way they handle default ACLs. See section 6.
@@ -173,6 +155,9 @@ Dans une modèle de de sécurise ACL, si quelque agent faire une requête pour a
 	Proftpd: 
 	A User's Guide March 31, 2003. 
 	http://proftpd.linux.co.uk/
+
+\bibitem{posix17}
+    Winfried Trümper: Summary about Posix.1e. Publicly available copies of POSIX 1003.1e/1003.2c. February 28, 1999. http://wt.xpilot.org/publications/posix.1e/
 
 \end{thebibliography}
 
