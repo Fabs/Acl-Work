@@ -1,0 +1,131 @@
+\documentclass[draft]{article}
+
+%Board
+
+% TEXT
+% Abstract
+% Introduction
+% Conclusion
+
+% FUTURE
+% other ideas
+
+% ACL
+% Explanation
+% Algorithm
+% Extended Attributtes 
+
+% USING
+% File System
+% Implementation
+% Kernel
+% Installing
+% Further on ubuntu
+% Exemple 
+
+% IMPLEMENTATION
+% ext[2,3]
+% jfs
+% xfs
+% samba
+% nfs
+% reiser
+
+% PROBLEMS
+% Performance
+% Compatibility
+% Complexity
+% Application support
+% Backup
+
+%Packages
+\usepackage[francais]{babel}
+\usepackage[utf8]{inputenc} 
+
+%Info
+\title{\textbf{Controle de Accés e le POSIX Access Control Lists(ACL)} \\ NE410 - Administration de Systéme }
+\author{Dan Pham et Fabrício Nascimento}
+\date{October 2009}
+
+\begin{document}
+
+\maketitle
+\newpage
+%----------------------------------------------------------------------------
+\section*{Introduction}
+
+%Le probleme et la solution plus simple
+Quand l'objective c'est controller l'accès sur les données dans une système de fichiers, il y a plusieurs formes de reglement. Par default, les systèmes POSIX (Portable Operatin System Interface)\cite{ieee1,ieee2} ont une mechanisme que permettre de associer chaque entité avec un ensemble de régle, lequel est composé por une sequence d'octet que exprime le droit du propriétaire, de son groupe et des autres utilisateurs. 
+
+%les limitation de ce solution la
+Ce mode tradicional est assez simple et capable de adresser les problemen plus frequent. Par contre, il pose des limitation aux administrateur de système, lequel fréquemment doivent employer quelques configuration non évidentes afin d'être capable de exprimer ces besoin. Par exemple les application comme le serveur FTP Proftp\cite{ftp} ont ces exclusive façon de résoudre ces problèmes de droits pour acceder les objets du système de fichier.
+
+% La solution ACL
+À couse de remédier ces limitation presenté les unix permettent l'employ de les ACL.   
+
+% Le reference aux texte originale
+Cette article presenté une exposition sur les ACL POSIX, ces mode de fonctionnement, ces clés de succes et désavantages. Le texte est fortement basé en l'article de Andreas Gruembacher\cite{aclsuse} dont a été dans l'equipe que as ajouté le support aux ACL dans le noyaux linux pour les système de fichier ext2 et ext3, lequel est le système de fichier plus utilisé dans les monde UNIX.
+
+\section*{Les systèmes POSIX}
+
+requisição
+
+%What is posix
+%the drafts that resulted in ACL
+
+\subsection*{Système Tradicional}
+
+%comment ça marche
+
+\subsection*{Les ACL}
+
+
+
+En Janvier de 1998\cite{aclsuse}
+
+Pour remédier à ce limitation "trusted" UNIX systems comme Trusted Solaris, Trusted Irix, Trusted AIX ont été developer avec 
+
+Dans une modèle de de sécurise ACL, si quelque agent faire une requête pour acceder aux donnés, il faut consulte les ACL pour une entrée que permetre l'operation demandé.    
+
+
+%----------------------------------------------------------------------------
+
+\section*{Conclusion}
+
+\begin{thebibliography}{9}
+
+%\bibitem{ref}
+%  Author,
+%  \emph{title}.
+%  Aditional
+
+ 
+\bibitem{aclsuse}
+  Andreas Gruenbacher,
+  \emph{POSIX Acess Control Lists on Linux}.
+  http://www.suse.de/~agruen/acl/linux-acls/online/,
+  2003.
+
+\bibitem{ieee1}
+    IEEE Std 1003.1-2001 (Open Group Technical Standard, Issue 6), 
+	Standard for Information Technology--Portable Operating System Interface (POSIX) 2001. 
+	ISBN 0-7381-3010-9. 
+	http://www.ieee.org/
+
+\bibitem{ieee2}
+    IEEE 1003.1e and 1003.2c: Draft Standard for Information Technology--Portable Operating System Interface (POSIX)--Part 1: System Application Program Interface (API) and Part 2: Shell and Utilities, draft 17 (withdrawn). 
+	October 1997. 
+	http://wt.xpilot.org/publications/posix.1e/
+
+\bibitem{ftp}
+	Mark Lowes: 
+	Proftpd: 
+	A User's Guide March 31, 2003. 
+	http://proftpd.linux.co.uk/
+
+\end{thebibliography}
+
+
+%http://www.suse.de/~agruen/acl/linux-acls/online/
+
+\end{document}
