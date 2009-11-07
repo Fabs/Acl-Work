@@ -60,9 +60,15 @@ Après les trois octets peut venir le \emph{Set User Id}, \emph{Set Group Id} et
 %Le droit du root
 Seulement le \emph{root} peut créer les groups e changer les association de groupes. Celui-là que aussi peut changer les propriétaire. 
 
-
-
 \subsection*{Les ACL}
+
+%Basic Definitions
+Dans une modèle de de sécurise ACL, si quelque agent faire une requête pour acceder aux donnés, il faut consulte les ACL pour une entrée que permetre l'operation demandé.    
+
+
+%How it works
+
+
 
 \begin{tabular}{|l|l|}
   \hline
@@ -78,8 +84,6 @@ Seulement le \emph{root} peut créer les groups e changer les association de gro
 	Autres & other::rwx \\   
   \hline
 \end{tabular}
-
-Dans une modèle de de sécurise ACL, si quelque agent faire une requête pour acceder aux donnés, il faut consulte les ACL pour une entrée que permetre l'operation demandé.    
 
 %changer le titre et la langue
 \begin{algorithm}
