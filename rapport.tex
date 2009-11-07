@@ -8,9 +8,9 @@
 
 
 %Info
-\title{\textbf{Controle de Accés e le POSIX Access Control Lists(ACL)} \\ CS435 - Administration de Systéme }
+\title{\textbf{Contrôle d'accès e le POSIX Access Control Lists(ACL)} \\ CS435 - Administration de Système }
 \author{Dan Pham et Fabrício Nascimento}
-\date{October 2009}
+\date{Octobre 2009}
 
 \begin{document}
 
@@ -20,26 +20,27 @@
 \section*{Introduction}
 
 %Le probleme et la solution plus simple
-Quand l'objective c'est controller l'accès sur les données dans une système de fichiers, il y a plusieurs formes de reglement. Par default, les systèmes POSIX (Portable Operatin System Interface)\cite{ieee1,ieee2} ont une mechanisme que permettre de associer chaque entité avec un ensemble de régle, lequel est composé por une sequence d'octet que exprime le droit du propriétaire, de son groupe et des autres utilisateurs. 
+Quand l'objective c'est contrôle l'accès sur les données dans une système de fichiers, il y a plusieurs formes de règlement. Par défaut, les systèmes POSIX (Portable Operatin System Interface)\cite{ieee1,ieee2} ont une mécanisme que permettre de associer chaque entité avec un ensemble de règle, lequel est composé par une séquence d'octet que exprime le droit du propriétaire, de son groupe et des autres utilisateurs. 
 
 %les limitation de ce solution la
-Ce mode tradicional est assez simple et capable de adresser les problemen plus frequent. Par contre, il pose des limitation aux administrateur de système, lequel fréquemment doivent employer quelques configuration non évidentes afin d'être capable de exprimer ces besoin. Par exemple les application comme le serveur FTP Proftp\cite{ftp} ont ces exclusive façon de résoudre ces problèmes de droits pour acceder les objets du système de fichier.
+Ce mode traditionnel est assez simple et capable de adresser les problème plus fréquents. Par contre, il pose des limitation aux administrateur de système, lesquels fréquemment doivent employer quelques configuration non évidentes afin d'être capable de exprimer ces besoins. Par exemple les application comme le serveur FTP Proftp\cite{ftp} ont ces exclusive façon de résoudre ces problèmes de droits pour accéder les objets du système de fichier.
 
 % La solution ACL
-À couse de remédier ces limitation presenté les unix permettent l'employ de les ACL.   
+À couse de remédier ces limitation présente les UNIX permettent d'employer les ACL.   
 
 % Le reference aux texte originale
-Cette article presenté une exposition sur les ACL POSIX, ces mode de fonctionnement, ces clés de succes et désavantages. Le texte est fortement basé en l'article de Andreas Gruembacher\cite{aclsuse} dont a été dans l'equipe que as ajouté le support aux ACL dans le noyaux linux pour les système de fichier ext2 et ext3, lequel est le système de fichier plus utilisé dans les monde UNIX.
+Cette article présente une exposition sur les ACL POSIX, ces mode de fonctionnement, ces clefs de succès et désavantages. Le texte est fortement basé en l'article de Andreas Gruembacher\cite{aclsuse} dont a été dans l'équipe que as ajouté le support aux ACL dans le noyaux Linux pour les système de fichier ext2 et ext3, lequel est le système de fichier plus utilisé dans les monde UNIX.
 
+
+%----------------------------------------------------------------------------
 \section*{Le POSIX 1003.1}
 
 %regarder bien le passer
 Après savoir la necessite de regler sur le domaine de sécurise et non seulement les ACL, une groupe a était forme pendant la definition de la famille de patron POSIX 1003.1. Les premieres documents POSIX qui ont été consideré ces question étions les document 1003.1e (\emph{System Application Programming Interface}) et 1003.2c (\emph{Shell and Utilities}), cependant, la primiere approximation de ce sujet était trop ambitieuse. Les groupe responsable pour le patronisation avait centre ces effort dans une tas assez grande de choses, lesquelles  comprenant \emph{Access Control Lists} (ACL), \emph{Audit}, \emph{Capability},\emph{ Mandatory Access Control }(MAC), et \emph{Information Labeling}\cite{aclsuse}.
 
-En Janvier de 1998\cite{aclsuse} le financeament était fini, par contre, le travaille n'était pas prés. De toute façon le diseptieme brouillon a été publique quand meme\cite{posix17}.  
-
+En Janvier de 1998\cite{aclsuse} le financement était fini, par contre, le travaille n'était pas prés. De toute façon le dixsèptieme brouillon a été publique quand meme\cite{posix17}.
 %the drafts that resulted in ACL
-Les base des ACL sont lancé sur le systeme tradicional present usualement dans tous les systeme UNIX, allors, avant de preciser sur les ACL on parlerais du modele tradicional.
+Les base des ACL sont lancé sur le système traditionnel présent usuellement dans tous les systeme UNIX, allors, avant de preciser sur les ACL on parlerais du modele tradicional.
 
 \subsection*{Système Tradicional}
 
