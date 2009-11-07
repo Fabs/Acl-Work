@@ -43,17 +43,13 @@ Après savoir la nécessite de régler sur le domaine de sécurise et non seulem
 
 En Janvier de 1998\cite{aclsuse} le financement était fini, par contre, le travaille n'était pas prés. De toute façon le dixsèptieme brouillon a été publique quand même\cite{posix17}.
 
-Donc après cette ans, les système UNIX appelé "\emph{trusted}" (Trusted Solaris, Trusted Irix, Trusted AIX ont été développer avec quelque parts de la documentation 17. Ces systèmes ne sont pas complètement compatible entre eux. Aujourd'hui les ACL sont suport
+Donc après cette an, les système UNIX appelé "\emph{trusted}" (Trusted Solaris, Trusted Irix, Trusted AIX ont été développer avec quelque parts de la documentation 17. Ces systèmes ne sont pas complètement compatible entre eux. 
 
-% Several UNIX system vendors have implemented var- ious parts of the security extensions, augmented by vendor-specific extensions. The resulting versions of their operating systems have often been labeled “trusted” operating systems, e.g., Trusted Solaris, Trusted Irix, Trusted AIX. Some of these “trusted” features have later been incorporated into the vendors’ main operating sys- tems.
-% ACLs are supported on different file system types on almost all UNIX-like systems nowadays. Some of these implementations are compatible with draft 17 of the specification, while others are based on older drafts. Unfortunately, this has resulted in a number of subtle differences among the different implementations.
-% The TrustedBSD project (http://www.trustedbsd.org/) lead by Robert Watson has implemented versions of the ACL, Capabilities, MAC, and Audit parts of POSIX.1e for FreeBSD. The ACL and MAC implementations ap- pear in FreeBSD-RELEASE as of January, 2003. The MAC implementation is still considered experimental.
+Aujourd'hui la plupart des système UNIX et UNIX-like support ACL. Ces implémentassions sont usuellement compatible avec le document 17. Le projet TrustedBSD aussi avait ajouter les ACL sur les système BSD. Les ACL e les MAC  FreeBSD-RELEASE avaient apparu en 2003.
 
+Les base des ACL sont lancé sur le système traditionnel présent usuellement dans presque tous les système UNIX, alors, avant de préciser sur les ACL on parlerais du modelé traditionnel.
 
-%the drafts that resulted in ACL
-Les base des ACL sont lancé sur le système traditionnel présent usuellement dans tous les systeme UNIX, allors, avant de preciser sur les ACL on parlerais du modele tradicional.
-
-\subsection*{Système Tradicional}
+\subsection*{Système de permission Traditionnel}
 
 %Les groups e les permission
 Le modele traditional POSIX offre trois group de utilisateur qui sont le propriétaire, le group e les autres. Chaque group a une octet que indique les permission de lecture (\textbf{r}ead), écrire (\textbf{w}rite) et execution (e\textbf{x}ecute). La premiere classe fournit les permission pour le utilisateur que rempli le role de propriétaire, ensuite, vien les droits pour le groupe principal du propriétaire enfim les droites pour touts les autres utilisateurs. 
