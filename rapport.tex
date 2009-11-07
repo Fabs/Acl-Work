@@ -36,9 +36,20 @@ Cette article présente une exposition sur les ACL POSIX, ces mode de fonctionne
 \section*{Le POSIX 1003.1}
 
 %regarder bien le passer
-Après savoir la necessite de regler sur le domaine de sécurise et non seulement les ACL, une groupe a était forme pendant la definition de la famille de patron POSIX 1003.1. Les premieres documents POSIX qui ont été consideré ces question étions les document 1003.1e (\emph{System Application Programming Interface}) et 1003.2c (\emph{Shell and Utilities}), cependant, la primiere approximation de ce sujet était trop ambitieuse. Les groupe responsable pour le patronisation avait centre ces effort dans une tas assez grande de choses, lesquelles  comprenant \emph{Access Control Lists} (ACL), \emph{Audit}, \emph{Capability},\emph{ Mandatory Access Control }(MAC), et \emph{Information Labeling}\cite{aclsuse}.
 
-En Janvier de 1998\cite{aclsuse} le financement était fini, par contre, le travaille n'était pas prés. De toute façon le dixsèptieme brouillon a été publique quand meme\cite{posix17}.
+Traditionnellement les système qui implémentions les patron POSIX avaient une système simple et puissante de permission, quand même, certain problèmes ont arrive, et éventuellement les problèmes ont apparaître. 
+
+Après savoir la nécessite de régler sur le domaine de sécurise et non seulement les ACL, une groupe a était forme pendant la définition de la famille de patron POSIX 1003.1. Les premières documents POSIX qui ont été considère ces question étaient les document 1003.1e (\emph{System Application Programming Interface}) et 1003.2c (\emph{Shell and Utilities}), cependant, la première approximation de ce sujet était trop ambitieuse. Les groupe responsable pour le patronisation avait centre ces effort dans une tas assez grande de choses, lesquelles  comprenant \emph{Access Control Lists} (ACL), \emph{Audit}, \emph{Capability},\emph{ Mandatory Access Control }(MAC), et \emph{Information Labeling}\cite{aclsuse}.
+
+En Janvier de 1998\cite{aclsuse} le financement était fini, par contre, le travaille n'était pas prés. De toute façon le dixsèptieme brouillon a été publique quand même\cite{posix17}.
+
+Donc après cette ans, les système UNIX appelé "\emph{trusted}" (Trusted Solaris, Trusted Irix, Trusted AIX ont été développer avec quelque parts de la documentation 17. Ces systèmes ne sont pas complètement compatible entre eux. Aujourd'hui les ACL sont suport
+
+% Several UNIX system vendors have implemented var- ious parts of the security extensions, augmented by vendor-specific extensions. The resulting versions of their operating systems have often been labeled “trusted” operating systems, e.g., Trusted Solaris, Trusted Irix, Trusted AIX. Some of these “trusted” features have later been incorporated into the vendors’ main operating sys- tems.
+% ACLs are supported on different file system types on almost all UNIX-like systems nowadays. Some of these implementations are compatible with draft 17 of the specification, while others are based on older drafts. Unfortunately, this has resulted in a number of subtle differences among the different implementations.
+% The TrustedBSD project (http://www.trustedbsd.org/) lead by Robert Watson has implemented versions of the ACL, Capabilities, MAC, and Audit parts of POSIX.1e for FreeBSD. The ACL and MAC implementations ap- pear in FreeBSD-RELEASE as of January, 2003. The MAC implementation is still considered experimental.
+
+
 %the drafts that resulted in ACL
 Les base des ACL sont lancé sur le système traditionnel présent usuellement dans tous les systeme UNIX, allors, avant de preciser sur les ACL on parlerais du modele tradicional.
 
@@ -63,7 +74,6 @@ Seulement le \emph{root} peut créer les groups e changer les association de gro
 
 En Janvier de 1998\cite{aclsuse}
 
-Pour remédier à ce limitation "trusted" UNIX systems comme Trusted Solaris, Trusted Irix, Trusted AIX ont été developer avec 
 
 Dans une modèle de de sécurise ACL, si quelque agent faire une requête pour acceder aux donnés, il faut consulte les ACL pour une entrée que permetre l'operation demandé.    
 
