@@ -63,8 +63,33 @@ Seulement le \emph{root} peut créer les groups e changer les association de gro
 \subsection*{Les ACL}
 
 
+Table: Types of ACL Entries
+Entry type 	Text form
+Owner 	user::rwx
+Named user 	user:name:rwx
+Owning group 	group::rwx
+Named group 	group:name:rwx
+Mask 	mask::rwx
+Others 	other::rwx
 
-%L'histoire
+\begin{tabular}{|l|l|}
+  \hline
+    \multicolumn{2}{|c|}{Les types de ACL} \\
+  \hline
+	\textbf{Type d'entrée} & \textbf{format} \\
+  \hline
+	Propriétaire & user::rwx \\
+	Utilisateur nommée & user:name:rwx  \\
+	Groupe propriétaire & group::rwx \\
+	Groupe nommée & group:name:rwx \\
+	Masque & mask::rwx \\
+	Autres & other::rwx \\   
+  \hline
+\end{tabular}
+
+
+
+
 
 
 %Qu'es-ce qu'est?
@@ -77,9 +102,9 @@ Dans une modèle de de sécurise ACL, si quelque agent faire une requête pour a
 
 
 
-%changer le titre
+%changer le titre et la langue
 \begin{algorithm}
-\caption{Verifie se une utilisateur peut ou ne peut pas acceder une objet du système de fichier}
+\caption{Vérifie se une utilisateur peut ou ne peut pas accéder une objet du système de fichier}
 \label{algacl}
 \begin{algorithmic}
 \IF{the user ID of the process is the owner}
