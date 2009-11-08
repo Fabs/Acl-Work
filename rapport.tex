@@ -1,6 +1,8 @@
 %Remove the draft before delivering the article
 \documentclass[draft]{article}
 
+
+
 %Language and Encoding
 \usepackage[francais]{babel}
 \usepackage[utf8]{inputenc}
@@ -70,7 +72,7 @@ Seulement le \emph{root} peut créer les groups e changer les association de gro
 
 %Basic Definitions
 Dans une modèle de de sécurise ACL, si quelque agent faire une requête pour accéder aux donnés, il faut consulte les ACL pour une entrée que permettre l'opération demandé. Chaque ACL est une ensemble de règles d'accès. Les règles possible peut-être regarder dans le tableau ci-dessous. 
-
+\begin{center}
 \begin{tabular}{|l|l|}
   \hline
     \multicolumn{2}{|c|}{Les types de ACL} \\
@@ -85,6 +87,7 @@ Dans une modèle de de sécurise ACL, si quelque agent faire une requête pour a
 	Autres & other::rwx \\   
   \hline
 \end{tabular}
+\end{center}
 
 Le format des règles sont formée par une indicateur de classe (comme les classe du système Traditionnel), une quantificateur pour spécifier de quel utilisateur ou group on parle et les octet de permission.
 
@@ -94,6 +97,7 @@ Avec cette représentation le sens de la classe du groupe a redéfini comment le
 These named group and named user entries are assigned to the group class, which already contains the owning group entry. Different from the POSIX.1 permission model, the group class may now contain ACL entries with different permission sets, so the group class permissions alone are no longer sufficient to represent all the detailed permissions of all ACL entries it contains. Therefore, the meaning of the group class permissions is redefined: under their new semantics, they represent an upper bound of the permissions that any entry in the group class will grant. This upper bound property ensures that POSIX.1 applications that are unaware of ACLs will not suddenly and unexpectedly start to grant additional permissions once ACLs are supported.}.
 
 Les ACL qui sont équivalent avec le mode simple de permission de fichier s'appellent minimale et ils ont trois entrée. Si les ACL peut avoir plusieurs entrée ont les appelle étendu. Tous les ACL étendu doivent avoir l'entrée masque et peut contenir théoriquement n'importe combien de entrée. On verrais après que ce numéro d'entrée peut-être limitée pour chaque implémentassions et que aussi il est important pour la performance.
+
 
 \begin{figure}[htbp]
 	\centering
@@ -107,8 +111,6 @@ Les ACL qui sont équivalent avec le mode simple de permission de fichier s'appe
 % In minimal ACLs, the group class permissions are identical to the owning group permissions. In extended ACLs, the group class may contain entries for additional users or groups. This results in a problem: some of these additional entries may contain permissions that are not contained in the owning group entry, so the owning group entry permissions may differ from the group class permissions.
 % 
 % This problem is solved by the virtue of the mask entry. With minimal ACLs, the group class permissions map to the owning group entry permissions. With extended ACLs, the group class permissions map to the mask entry permissions, whereas the owning group entry still defines the owning group permissions. The mapping of the group class permissions is no longer constant. Figure 1 shows these two cases.
-% 
-% Figure: Mapping between ACL Entries and File Mode Permission Bits \begin{figure}\begin{centering} \par \epsfig{file=acl_mapping_minimal.eps, scale... ...sfig{file=acl_mapping_extended.eps, scale=0.7} \par\end{centering}\end{figure}
 % 
 % When an application changes any of the owner, group, or other class permissions (e.g., via the chmod command), the corresponding ACL entry changes as well. Likewise, when an application changes the permissions of an ACL entry that maps to one of the user classes, the permissions of the class change.
 % 
