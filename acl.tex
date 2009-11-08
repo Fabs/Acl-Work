@@ -28,7 +28,7 @@ Seulement le \emph{root} peut créer les groups e changer les association de gro
 \subsection*{Les ACL}
 
 %Basic Definitions
-Dans une modèle de de sécurise ACL, si quelque agent faire une requête pour accéder aux donnés, il faut consulte les ACL pour une entrée que permettre l'opération demandé. Chaque ACL est une ensemble de règles d'accès. Les règles possible peut-être regarder dans le tableau ci-dessous\ref{entree}.
+Dans une modèle de de sécurise ACL, si quelque agent faire une requête pour accéder aux donnés, il faut consulte les ACL pour une entrée que permettre l'opération demandé. Chaque ACL est une ensemble de règles d'accès. Les règles possible peut-être regarder dans le tableau ci-dessous(\ref{entree}).
 \begin{center}
 \begin{tabular}{|l|l|}
   \hline
@@ -59,7 +59,7 @@ Les ACL qui sont équivalent avec le mode simple de permission de fichier s'appe
 %EXPLIQUER MELLEIUR
 Dans les ACL minimale les permission de classe groupe sont égale à les permission de groupe propriétaire, cependant, dans les ACL étendu on peut avoir les entrée avec plusieurs utilisateurs et/ou groupes, quelques de cette entrées peut-être contenir permissions qui la classe groupe n'aurais pas, alors, on peut avoir une inconsistance basée en le cas qui les permissions du groupe propriétaire sont diffèrent de les permission de la classe groupe. 
 
-On résoudre ce problème avec le masque. Comme on peut observer dans le figure 1\ref{fig:img_acl-mapping}, il y a deux cas: les permission de la classe groupe seront déguise pour la masque tandis que les permission de l'entrée du groupe propriétaire encore définit les permission pour le groupe propriétaire.    
+On résoudre ce problème avec le masque. Comme on peut observer dans le figure (\ref{fig:img_acl-mapping}), il y a deux cas: les permission de la classe groupe seront déguise pour la masque tandis que les permission de l'entrée du groupe propriétaire encore définit les permission pour le groupe propriétaire.    
 
 
 \begin{figure}[htbp]
@@ -72,7 +72,7 @@ On résoudre ce problème avec le masque. Comme on peut observer dans le figure 
 
 Pour assurer le consistance, quand une application change les permission (par exemple le commande \emph{chmod}) les ACL sont modifiée de façon a reproduire ce modification. 
 
-On a dit que le permission de la classe groupe sont calculée comme le limite supérieur de tous les entrée dans le classe group. Avec les ACLs minimaux cette computation est simple, par contre, avec les ACLs étendu, on a besoin de masquer les permissions. Comme l'exemple de le tableau 2\ref{tab:masquee}, les entrée de permission qui sont partie de la classe de groupe et qui aussi sont présente dans l'entrée masque sont applique effectivement. Si une permission était absent dans le masque, c'est a dire que aucun entrée de group (qui non le groupe du propriétaire) peut avoir ce permission, on dit dans ce cas qui la entrée est masquée.  
+On a dit que le permission de la classe groupe sont calculée comme le limite supérieur de tous les entrée dans le classe group. Avec les ACLs minimaux cette computation est simple, par contre, avec les ACLs étendu, on a besoin de masquer les permissions. Comme l'exemple de le tableau (\ref{tab:masquee}), les entrée de permission qui sont partie de la classe de groupe et qui aussi sont présente dans l'entrée masque sont applique effectivement. Si une permission était absent dans le masque, c'est a dire que aucun entrée de group (qui non le groupe du propriétaire) peut avoir ce permission, on dit dans ce cas qui la entrée est masquée.  
 
 \begin{center}
 \begin{tabular}{|l|l|l|}

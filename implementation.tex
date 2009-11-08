@@ -1,6 +1,6 @@
 \section{Implémentassions}
 
-%il faut ajouter reference
+%il faut ajouter references
 ACLs sont fréquemment implémentent comment extensions du noyaux, modules dans le LINUX contexte. L'objectif de ce cession c'est explique superficiellement les questions concernant les implémentions de les ACL. Le discussion doit lancer la base pour les évaluations de performance et les problèmes dans les sessions prochaines.
 
 "Les ACLs sont morceaux d'information de taille variable qui sont associe avec les objet du systeme de fichier"\cite{aclsuse}. Plusieurs implémentassions de cette modelé sont possible. Par exemple, avec Solaris dans le système de fichier UFS\cite{acl_permission} chaque \emph{inode} peut être avoir an ACL. Si il en a, il doit avoir l'information \emph{i\_shadow}, une pointeur pour une \emph{shadow inode}. Les \emph{shadow inode} sont comment fichiers régulières d'utilisateurs, diffèrent fichier avec les mêmes ACL peut avoir pointeurs pour le même \emph{shadow inodes}. Les information des ACL sont garde dans les bloque de donné de chaque \emph{shadow inodes}.
