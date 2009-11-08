@@ -1,6 +1,3 @@
-%Remove the draft before delivering the article
-\documentclass[draft]{article}
-
 
 
 %Language and Encoding
@@ -98,6 +95,7 @@ These named group and named user entries are assigned to the group class, which 
 
 Les ACL qui sont équivalent avec le mode simple de permission de fichier s'appellent minimale et ils ont trois entrée. Si les ACL peut avoir plusieurs entrée ont les appelle étendu. Tous les ACL étendu doivent avoir l'entrée masque et peut contenir théoriquement n'importe combien de entrée. On verrais après que ce numéro d'entrée peut-être limitée pour chaque implémentassions et que aussi il est important pour la performance.
 
+Dans les ACL minimale la classe groupe est mapm
 
 \begin{figure}[htbp]
 	\centering
@@ -106,7 +104,7 @@ Les ACL qui sont équivalent avec le mode simple de permission de fichier s'appe
 	\label{fig:img_acl-mapping}
 \end{figure}
 
-		
+
 
 % In minimal ACLs, the group class permissions are identical to the owning group permissions. In extended ACLs, the group class may contain entries for additional users or groups. This results in a problem: some of these additional entries may contain permissions that are not contained in the owning group entry, so the owning group entry permissions may differ from the group class permissions.
 % 
