@@ -10,4 +10,4 @@ all: clean
 	xpdf rapport-draft.pdf
 
 clean:
-	rm -f *.log *.aux 
+	rm -f *.log *.aux rapport-draft.pdf
