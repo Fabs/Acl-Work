@@ -13,11 +13,12 @@ R Revisé
 
 
 # Definitions, and exaplanations Section
-- Future de les ACL
 * Explanation sur les ACL
-- Explanation sur les ACL masque
 * Explanation du metode traditional
 * Algorithm (it need to have the name changed)
+- Explanation sur les ACL masque
+- Heritage
+- Future de les ACL
 
 # Working in Real Section
 - Kernel
@@ -42,11 +43,12 @@ R Revisé
 - Application support
 - Backup
 
-
-
-TACHES
-- Voir le implementation do draft posix
+#Peut Etre
+- ACL Mac
 - librarie C
+
+DOCUMEN
+- Voir le implementation do draft posix
 - Referencer les tabeles
 
 PROBLEMES

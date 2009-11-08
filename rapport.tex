@@ -170,24 +170,41 @@ Pour vérifier les droits d'accès de une objet du système de fichier il y a un
 
 \subsection*{Héritage mécanisme}
 
+Le patron POSIX règle non seulement sur les accès des objet du système, mais aussi sur le mécanisme de Héritage. Les ACL sont partage en deux type, les \emph{access ACL} (que on a vu jusqu'á maintenant) et les \emph{default ACL} qui comprendre les règles de héritage.  
 
-% 
-% So far we have only looked at ACLs that define the current access permissions of file system objects. This type is called access ACL. A second type called default ACL is also defined. They define the permissions a file system object inherits from its parent directory at the time of its creation. Only directories can be associated with default ACLs. Default ACLs for non-directories would be of no use, because no other file system objects can be created inside non-directories. Default ACLs play no direct role in access checks.
-% 
+Quand on parle de l'héritage on parle de les droits qui sont attribue aux objet du système pendand le moment en que il sont crée. Il y une seul type de objet qui peut être associe avec les \emph{default ACL}; les répertoire. Il faut dire que il n'y a aucune sens en donne \emph{default ACL } pour les fichiers, alors que, aucune objet du système peut être crée dans une fichier, aussi, il faut rappeler que les \emph{Default ACL} n'ont pas aucune implication sur les \emph{access ACL}.
+
+Le système traditionnel a une commande pour designer les modes de permission par défaut pour les nouveau fichiers et répertoires: le commande \emph{umask}. Quand il n'y a aucune ACL par défaut, le permission effective est détermine par le paramètre de mode moins les permission configuré avec umask. 
+
+
+
 % When a directory is created inside a directory that has a default ACL, the new directory inherits the parent directory's default ACL both as its access ACL and default ACL. Objects that are not directories inherit the default ACL of the parent directory as their access ACL only.
 % 
 % The permissions of inherited access ACLs are further modified by the mode parameter that each system call creating file system objects has. The mode parameter contains nine permission bits that stand for the permissions of the owner, group, and other class permissions. The effective permissions of each class are set to the intersection of the permissions defined for this class in the ACL and specified in the mode parameter.
 % 
-% If the parent directory has no default ACL, the permissions of the new file are determined as defined in POSIX.1. The effective permissions are set to the permissions defined in the mode parameter, minus the permissions set in the current umask.
-% 
-% The umask has no effect if a default ACL exists. 
 
 
 
 \section{Linux}
 
+
+% Patches that implement POSIX 1003.1e draft 17 ACLs have been available for various versions of Linux for several years now. They were added to version 2.5.46 of the Linux kernel in November 2002. Current Linux distributions are still based on the 2.4.x stable kernels series. SuSE and the United Linux consortium have integrated the 2.4 kernel ACL patches earlier than others, so their current products offer the most complete ACL support available for Linux to date. Other vendors apparently are still reluctant to make that important change, but experimental versions are expected to be available later this year.
+
+
+% 2004 At the time of this writing, ACL support on Linux is available for the Ext2, Ext3, IBM JFS, ReiserFS, and SGI XFS file systems. Solaris-compatible ACL support for NFS version 3 exists since March 3, 2003.
+
+%Ubuntu
+
+%Debian
+
+%Mac
+
 %A voir maintenant
-\subsection*{ACL Implementation in Linux}
+
+\subsection*{Using ACL in Linux}
+ 
+
+The Linux getfacl and setfacl command line utilities do not strictly follow POSIX 1003.2c draft 17, which shows mostly in the way they handle default ACLs. See section 6.
 
 
 \begin{verbatim}
@@ -201,7 +218,7 @@ drwxr-xr-x@ 2 fabsn  staff     102  8 Nov 15:26 img
 \end{verbatim}
 
 \begin{verbatim}
-	fabsn@vadmin:/media/esisar$ getfacl repertoire/
+fabsn@vadmin:/media/esisar$ getfacl repertoire/
 # file: repertoire/
 # owner: root
 # group: root
@@ -227,11 +244,22 @@ other::r-x
 
 %systemes de fichier
 
-% Patches that implement POSIX 1003.1e draft 17 ACLs have been available for various versions of Linux for several years now. They were added to version 2.5.46 of the Linux kernel in November 2002. Current Linux distributions are still based on the 2.4.x stable kernels series. SuSE and the United Linux consortium have integrated the 2.4 kernel ACL patches earlier than others, so their current products offer the most complete ACL support available for Linux to date. Other vendors apparently are still reluctant to make that important change, but experimental versions are expected to be available later this year.
+\section{Implementation}
+
+% Extended Attributes
 % 
-% The Linux getfacl and setfacl command line utilities do not strictly follow POSIX 1003.2c draft 17, which shows mostly in the way they handle default ACLs. See section 6.
+% In this section we begin detailing the implementation of ACLs in Linux.
 % 
-% At the time of this writing, ACL support on Linux is available for the Ext2, Ext3, IBM JFS, ReiserFS, and SGI XFS file systems. Solaris-compatible ACL support for NFS version 3 exists since March 3, 2003.
+% ACLs are pieces of information of variable length that are associated with file system objects. Dedicated strategies for storing ACLs on file systems might be devised, as Solaris does on the UFS file system [13]. Each inode on a UFS file system has a field called i_shadow. If an inode has an ACL, this field points to a shadow inode. On the file system, shadow inodes are used like regular files. Each shadow inode stores an ACL in its data blocks. Multiple files with the same ACL may point to the same shadow inode.
+% 
+% Because other kernel and user space extensions in addition to ACLs benefit from being able to associate pieces of information with files, Linux and most other UNIX-like operating systems implement a more general mechanism called Extended Attributes (EAs). On these systems, ACLs are implemented as EAs.
+% 
+% Extended attributes are name and value pairs associated permanently with file system objects, similar to the environment variables of a process. The EA system calls used as the interface between user space and the kernel copy the attribute names and values between the user and kernel address spaces. The Linux attr(5) manual page contains a more complete description of EAs as found on Linux. A paper by Robert Watson discussing supporting infrastructure for security extensions in FreeBSD contains a comparison of different EA implementations on different systems [25].
+% 
+% Other operating systems, such as Sun Solaris, Apple MacOS, and Microsoft Windows, allow multiple streams (or forks) of information to be associated with a single file. These streams support the usual file semantics. After obtaining a handle on the stream, it is possible to access the streams' contents using ordinary file operations like read and write. Confusingly, on Solaris these streams are called extended attributes as well. The EAs on Linux and several other UNIX-like operating systems have nothing to do with these streams. The more limited EA interface offers several advantages. They are easier to implement, EA operations are inherently atomic, and the stateless interface does not suffer from overheads caused by obtaining and releasing file handles. Efficiency is important for frequently accessed objects like ACLs.
+% 
+% At the file system level, the obvious and straight-forward approach to implement EAs is to create an additional directory for each file system object that has EAs and to create one file for each extended attribute that has the attribute's name and contains the attribute's value. Because on most file systems allocating an additional directory plus one or more files requires several disk blocks, such a simple implementation would consume a lot of space, and it would not perform very well because of the time needed to access all these disk blocks. Therefore, most file systems use different mechanisms for storing EAs.
+
 
 %----------------------------------------------------------------------------
 

@@ -11,3 +11,6 @@ all: clean
 
 clean:
 	rm -f *.log *.aux rapport-draft.pdf
+
+count:
+	cat rapport.tex | grep -v "%" | grep -v '\\' | wc 
