@@ -72,11 +72,7 @@ On résoudre ce problème avec le masque. Comme on peut observer dans le figure 
 
 Pour assurer le consistance, quand une application change les permission (par exemple le commande \emph{chmod}) les ACL sont modifiée de façon a reproduire ce modification. 
 
-
-% The group class permissions represent the upper bound of the permissions granted by any entry in the group class. With minimal ACLs this is trivially the case. With extended ACLs, this is implemented by masking permissions (hence the name of the mask entry): permissions in entries that are a member of the group class which are also present in the mask entry are effective. Permissions that are absent in the mask entry are masked and thus do not take effect. See Table 2.
-% 
-
-% The owner and other entries are not in the group class. Their permissions are always effective and never masked.
+On a dit que le permission de la classe groupe sont calculée comme le limite supérieur de tous les entrée dans le classe group. Avec les ACLs minimaux cette computation est simple, par contre, avec les ACLs étendu, on a besoin de masquer les permissions. Comme l'exemple de le tableau 2\ref{tab:masquee}, les entrée de permission qui sont partie de la classe de groupe et qui aussi sont présente dans l'entrée masque sont applique effectivement. Si une permission était absent dans le masque, c'est a dire que aucun entrée de group (qui non le groupe du propriétaire) peut avoir ce permission, on dit dans ce cas qui la entrée est masquée.  
 
 \begin{center}
 \begin{tabular}{|l|l|l|}
@@ -92,7 +88,7 @@ Pour assurer le consistance, quand une application change les permission (par ex
 	\multicolumn{2}{|c|}{Permission Effective} & r--\\
   \hline
 \end{tabular}
-\label{tab:entree}
+\label{tab:masque}
 \end{center}
 
 \subsection*{Algorithme de vérification}
