@@ -200,6 +200,23 @@ drwxr-xr-x@ 2 fabsn  staff     102  8 Nov 15:26 img
 -rw-r--r--  1 fabsn  staff   18129  8 Nov 15:57 rapport-draft.log
 \end{verbatim}
 
+\begin{verbatim}
+	fabsn@vadmin:/media/esisar$ getfacl repertoire/
+# file: repertoire/
+# owner: root
+# group: root
+user::r-x
+user:daemon:rwx
+user:bin:rwx
+user:fabsn:rwx
+user:nobody:rwx
+group::r-x
+group:admin:rwx
+group:fabsn:rwx
+mask::rwx
+other::r-x	
+\end{verbatim}
+
 %noyaux patches
 
 % ls -l
