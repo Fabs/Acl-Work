@@ -1,13 +1,10 @@
 \section*{Introduction}
 
 %Le probleme et la solution plus simple
-Quand l'objective c'est contrôle l'accès sur les données dans une système de fichiers, il y a plusieurs formes de règlement. Par défaut, les systèmes POSIX (Portable Operatin System Interface)\cite{ieee1,ieee2} ont une mécanisme que permettre de associer chaque entité avec un ensemble de règle, lequel est composé par une séquence d'octet que exprime le droit du propriétaire, de son groupe et des autres utilisateurs. 
+Quand l'objective c'est contrôle l'accès sur les données dans une système de fichiers, il y a plusieurs formes de règlement. Par défaut, les systèmes POSIX (Portable Operation System Interface)\cite{ieee1,ieee2} ont une mécanisme que permettre de associer chaque entité avec un ensemble de règle, lequel est composé par une séquence d'octet qui exprime le droit du propriétaire, de son groupe et des autres utilisateurs. 
 
 %les limitation de ce solution la
-Ce mode traditionnel est assez simple et capable de adresser les problème plus fréquents. Par contre, il pose des limitation aux administrateur de système, lesquels fréquemment doivent employer quelques configuration non évidentes afin d'être capable de exprimer ces besoins. Par exemple les application comme le serveur FTP Proftp\cite{ftp} ont ces exclusive façon de résoudre ces problèmes de droits pour accéder les objets du système de fichier.
+Ce mode traditionnel est assez simple et capable de adresser les problèmes plus fréquents. Par contre, il pose des limitation aux administrateur de système, lesquels fréquemment doivent employer quelques configurations non évidentes afin d'être capable de exprimer ces besoins. Par exemple les application comme le serveur FTP Proftp\cite{ftp} ont ces exclusive façon de résoudre les problèmes de droits pour accéder les objets du système de fichier.
 
 % La solution ACL
-À couse de remédier ces limitation présente les UNIX permettent d'employer les ACL.   
-
-% Le reference aux texte originale
-Cette article présente une exposition sur les ACL POSIX, ces mode de fonctionnement, ces clefs de succès et désavantages. Le texte est fortement basé en l'article de Andreas Gruembacher\cite{aclsuse} dont a été dans l'équipe que as ajouté le support aux ACL dans le noyaux Linux pour les système de fichier ext2 et ext3, lequel est le système de fichier plus utilisé dans les monde UNIX.
+À couse de remédier ces limitation présente, les système UNIX permettent d'employer les ACL. Cette article présente une exposition sur les ACL POSIX, ces mode de fonctionnement, ces clefs de succès et désavantages. Le texte est fortement basé en l'article de Andreas Gruembacher\cite{aclsuse} dont a été dans l'équipe que as ajouté le support aux ACL dans le noyaux Linux pour les système de fichier ext2 et ext3, lequel est le système de fichier plus utilisé dans les monde UNIX.
