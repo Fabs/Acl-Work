@@ -1,59 +1,57 @@
-Chapitre List:
+Ce fichier contient l'état actuelle de le rapport. Chaque groupe de activité commence pour une marque '#'. Après chaque tache peut avoir le marque '-'(À Faire), '*'(Prés) et 'R'(prés et révise). Il n'y a pas une relation directe dans chaque activité e une session. les taches sont partage en groupes, chaque groupe est nommée avant pour le '%'.  
 
-- À Faire
-* Prét
-R Revisé
+#CONTENT DU TEXTE
 
-
-# Text Section
+% Texte parfum :-)
 * Introduction
 - Abstract
 - Conclusion
 
-
-# Definitions, and exaplanations Section
-* Explanation sur les ACL
-* Explanation du metode traditional
-* Algorithm (it need to have the name changed)
-* Explanation sur les ACL masque
+% Définitions et explication sur le sujet
+* Les ACL
+* Le modèle traditionnelle 
+* le Algorithme 
+* Explication sur les ACL masque
 * Heritage
 - Future de les ACL
 
 
-# Working in Real Section
-* Kernel
-* File System
-* Installing
-* Further on ubuntu
-* Implementation
+% Les ACL en travaille
+* Noyaux
+* Système de Fichiers
+* Installation 
+* Ubuntu et Debian
+* Implémentation
 * Extended Attributtes
+* Linux
+- Mac
 - Exemple
 
-# Cases
+% Implémentation dans le système de Fichiers 
 - ext[2,3]
 - jfs
 - xfs
 - samba
 - nfs
 - reiser
+- hgfs
 
-# Problens and analysis section
+% Analyses 
 - Performance
-- Compatibility
-- Complexity
+- Compatibilité
+- Complexité
 - Application support
 - Backup
 
-#Peut Etre
-- ACL Mac
-- Reference pour l'implementation
-- librarie C
+% Add-ons :-)
+- Libraire C
 
-DOCUMEN
-- Voir le implementation do draft posix
-- Referencer les tabeles
-- translate ishadow
-- go plus deep dans les EA
-
-PROBLEMES
-- Verifie les droits de les image du article
+# AUTRES TACHES
+- Voir l'implémentation do brouillon POSIX 17
+- Traduire les mot anglais
+- Ref. Nautilus
+- Ref. Implémentation
+- Exemple
+- Présentation
+- Vérifie les droits de les image du article
+- Modifié le nom du Algorithme 
