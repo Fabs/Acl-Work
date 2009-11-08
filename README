@@ -9,7 +9,6 @@ R Revisé
 * Introduction
 - Abstract
 - Conclusion
-- Exemple
 
 
 # Definitions, and exaplanations Section
@@ -19,6 +18,7 @@ R Revisé
 - Explanation sur les ACL masque
 * Heritage
 - Future de les ACL
+- Exemple
 
 # Working in Real Section
 - Kernel
@@ -45,6 +45,7 @@ R Revisé
 
 #Peut Etre
 - ACL Mac
+- Reference pour l'implementation
 - librarie C
 
 DOCUMEN

@@ -1,10 +1,16 @@
-\section{Implementation}
+\section{Implémentassions}
+
+% 25 \cite{trust}
+
+%il faut ajouter reference
+ACLs sont fréquemment implémente comment extensions du noyaux, modules dans le LINUX contexte. L'objectif de ce cession c'est explique superficiellement les questions concernant les implémentions de les ACL. Le discussion doit lancer la base pour les évaluations de performance et les problèmes dans les sessions prochaines.
+
+"Les ACLs sont morceaux d'information de taille variable qui sont associe avec les objet du systeme de fichier"\cite{aclsuse}. Plusieurs implémentassions de cette modelé sont possible. Par exemple, avec Solaris dans le système de fichier UFS\cite{acl_permission} chaque \emph{inode} peut être avoir an ACL. Si il en a, il doit avoir l'information \emph{i\_shadow}, une pointeur pour une \emph{shadow inode}. Les \emph{shadow inode} sont comment fichiers régulières d'utilisateurs, diffèrent fichier avec les mêmes ACL peut avoir pointeurs pour le même \emph{shadow inodes}. Les information des ACL sont garde dans les bloque de donné de chaque \emph{shadow inodes}.
+
+
+
 
 % Extended Attributes
-% 
-% In this section we begin detailing the implementation of ACLs in Linux.
-% 
-% ACLs are pieces of information of variable length that are associated with file system objects. Dedicated strategies for storing ACLs on file systems might be devised, as Solaris does on the UFS file system [13]. Each inode on a UFS file system has a field called i_shadow. If an inode has an ACL, this field points to a shadow inode. On the file system, shadow inodes are used like regular files. Each shadow inode stores an ACL in its data blocks. Multiple files with the same ACL may point to the same shadow inode.
 % 
 % Because other kernel and user space extensions in addition to ACLs benefit from being able to associate pieces of information with files, Linux and most other UNIX-like operating systems implement a more general mechanism called Extended Attributes (EAs). On these systems, ACLs are implemented as EAs.
 % 
