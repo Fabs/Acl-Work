@@ -63,12 +63,7 @@ Seulement le \emph{root} peut créer les groups e changer les association de gro
 \subsection*{Les ACL}
 
 %Basic Definitions
-Dans une modèle de de sécurise ACL, si quelque agent faire une requête pour acceder aux donnés, il faut consulte les ACL pour une entrée que permetre l'operation demandé.    
-
-
-%How it works
-
-
+Dans une modèle de de sécurise ACL, si quelque agent faire une requête pour accéder aux donnés, il faut consulte les ACL pour une entrée que permettre l'opération demandé. Chaque ACL est une ensemble de règles d'accès. Les règles possible peut-être regarder dans le tableau ci-dessous. 
 
 \begin{tabular}{|l|l|}
   \hline
@@ -84,6 +79,19 @@ Dans une modèle de de sécurise ACL, si quelque agent faire une requête pour a
 	Autres & other::rwx \\   
   \hline
 \end{tabular}
+
+Le format des règles sont formée par une indicateur de classe (comme les classe du système Traditionnel), une quantificateur pour spécifier de quel utilisateur ou group on parle et les octet de permission.
+
+ 
+
+   
+
+
+%How it works
+
+
+
+
 
 %changer le titre et la langue
 \begin{algorithm}
