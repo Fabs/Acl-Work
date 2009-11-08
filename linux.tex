@@ -1,0 +1,58 @@
+\section{Linux}
+
+
+% Patches that implement POSIX 1003.1e draft 17 ACLs have been available for various versions of Linux for several years now. They were added to version 2.5.46 of the Linux kernel in November 2002. Current Linux distributions are still based on the 2.4.x stable kernels series. SuSE and the United Linux consortium have integrated the 2.4 kernel ACL patches earlier than others, so their current products offer the most complete ACL support available for Linux to date. Other vendors apparently are still reluctant to make that important change, but experimental versions are expected to be available later this year.
+
+
+% 2004 At the time of this writing, ACL support on Linux is available for the Ext2, Ext3, IBM JFS, ReiserFS, and SGI XFS file systems. Solaris-compatible ACL support for NFS version 3 exists since March 3, 2003.
+
+%Ubuntu
+
+%Debian
+
+%Mac
+
+%A voir maintenant
+
+\subsection*{Using ACL in Linux}
+ 
+
+The Linux getfacl and setfacl command line utilities do not strictly follow POSIX 1003.2c draft 17, which shows mostly in the way they handle default ACLs. See section 6.
+
+
+\begin{verbatim}
+-rw-r--r--@ 1 fabsn  staff     378  8 Nov 15:29 Makefile
+-rw-r--r--@ 1 fabsn  staff     618  8 Nov 15:59 README
+-rw-r--r--@ 1 fabsn  staff      31  8 Nov 15:15 draft-header
+-rw-r--r--@ 1 fabsn  staff      24  8 Nov 15:15 header
+drwxr-xr-x@ 2 fabsn  staff     102  8 Nov 15:26 img
+-rw-r--r--  1 fabsn  staff     972  8 Nov 15:57 rapport-draft.aux
+-rw-r--r--  1 fabsn  staff   18129  8 Nov 15:57 rapport-draft.log
+\end{verbatim}
+
+\begin{verbatim}
+fabsn@vadmin:/media/esisar$ getfacl repertoire/
+# file: repertoire/
+# owner: root
+# group: root
+user::r-x
+user:daemon:rwx
+user:bin:rwx
+user:fabsn:rwx
+user:nobody:rwx
+group::r-x
+group:admin:rwx
+group:fabsn:rwx
+mask::rwx
+other::r-x	
+\end{verbatim}
+
+%noyaux patches
+
+% ls -l
+
+%getfacl
+
+%setfacl
+
+%systemes de fichier
