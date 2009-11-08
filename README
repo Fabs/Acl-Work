@@ -5,32 +5,44 @@ Chapitre List:
 R Revisé
 
 
+# Text Section
+* Introduction
 - Abstract
-* Introduction 
 - Conclusion
+- Exemple
+
+
+# Definitions, and exaplanations Section
 - Future de les ACL
 * Explanation sur les ACL
 - Explanation sur les ACL masque
 * Explanation du metode traditional
 * Algorithm (it need to have the name changed)
-- Extended Attributtes 
-- File System
-- Implementation
+
+# Working in Real Section
 - Kernel
+- File System
 - Installing
 - Further on ubuntu
-- Exemple 
+- Implementation
+- Extended Attributtes 
+
+# Cases
 - ext[2,3]
 - jfs
 - xfs
 - samba
 - nfs
 - reiser
+
+# Problens and analysis section
 - Performance
 - Compatibility
 - Complexity
 - Application support
 - Backup
+
+
 
 TACHES
 - Voir le implementation do draft posix
