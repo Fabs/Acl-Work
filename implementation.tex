@@ -1,21 +1,18 @@
 \section{Implémentassions}
 
-% 25 \cite{trust}
-
 %il faut ajouter reference
-ACLs sont fréquemment implémente comment extensions du noyaux, modules dans le LINUX contexte. L'objectif de ce cession c'est explique superficiellement les questions concernant les implémentions de les ACL. Le discussion doit lancer la base pour les évaluations de performance et les problèmes dans les sessions prochaines.
+ACLs sont fréquemment implémentent comment extensions du noyaux, modules dans le LINUX contexte. L'objectif de ce cession c'est explique superficiellement les questions concernant les implémentions de les ACL. Le discussion doit lancer la base pour les évaluations de performance et les problèmes dans les sessions prochaines.
 
 "Les ACLs sont morceaux d'information de taille variable qui sont associe avec les objet du systeme de fichier"\cite{aclsuse}. Plusieurs implémentassions de cette modelé sont possible. Par exemple, avec Solaris dans le système de fichier UFS\cite{acl_permission} chaque \emph{inode} peut être avoir an ACL. Si il en a, il doit avoir l'information \emph{i\_shadow}, une pointeur pour une \emph{shadow inode}. Les \emph{shadow inode} sont comment fichiers régulières d'utilisateurs, diffèrent fichier avec les mêmes ACL peut avoir pointeurs pour le même \emph{shadow inodes}. Les information des ACL sont garde dans les bloque de donné de chaque \emph{shadow inodes}.
 
+La capacité de associer morceaux d'information avec fichiers est utilisé pour plusieurs fonctions du système de exploitation, alors, en la plupart de ces systèmes \emph{UNIX-like} (Linux comprendre) implémentent les Attributs Étendu (\emph{Extended Attributes (EAs)}) et les ACL sont implémentent avec ce mécanisme.
 
+Le linux page de manuel\cite{aclsuse} \emph{attr(5)} contienne une explication plus précise sur les EAs dans linux, au notre but, suffi dire que comme les variables des processus, les EAs sont pairs (nom, valeur) associe de manier persistant avec les objet du système de fichier et que les appel de système linux, dans le espace de utilisateur, sont employé pour opérer sur les information de ces pairs dans le espace de adresse du noyaux.
 
+Pour l'implémentation de cette infrastructure dans les système FreeBSD il faut voir le article de Robert Watson\cite{trust}. Cette article content aussi une comparaison de plusieurs implémentation de ces système. 
 
-% Extended Attributes
-% 
-% Because other kernel and user space extensions in addition to ACLs benefit from being able to associate pieces of information with files, Linux and most other UNIX-like operating systems implement a more general mechanism called Extended Attributes (EAs). On these systems, ACLs are implemented as EAs.
-% 
-% Extended attributes are name and value pairs associated permanently with file system objects, similar to the environment variables of a process. The EA system calls used as the interface between user space and the kernel copy the attribute names and values between the user and kernel address spaces. The Linux attr(5) manual page contains a more complete description of EAs as found on Linux. A paper by Robert Watson discussing supporting infrastructure for security extensions in FreeBSD contains a comparison of different EA implementations on different systems [25].
-% 
-% Other operating systems, such as Sun Solaris, Apple MacOS, and Microsoft Windows, allow multiple streams (or forks) of information to be associated with a single file. These streams support the usual file semantics. After obtaining a handle on the stream, it is possible to access the streams' contents using ordinary file operations like read and write. Confusingly, on Solaris these streams are called extended attributes as well. The EAs on Linux and several other UNIX-like operating systems have nothing to do with these streams. The more limited EA interface offers several advantages. They are easier to implement, EA operations are inherently atomic, and the stateless interface does not suffer from overheads caused by obtaining and releasing file handles. Efficiency is important for frequently accessed objects like ACLs.
-% 
+Il faut dire que la version plus limité des EA peut offrir plusieurs avantages: Il sont plus facile de implémettre, les opération sont atomic, l'interface est \emph{stateless} et pour cette raison il n'y a aucun surcharge cause pour le travaille avec \emph{file handlers}. On verrais après dans le cession de performance, que l'efficience est assez importante pour être oublier quand on parle de les donnés fréquentent accès comme les ACL.   
+
+\subsection{Les EAs e les système de fichiers}
+ 
 % At the file system level, the obvious and straight-forward approach to implement EAs is to create an additional directory for each file system object that has EAs and to create one file for each extended attribute that has the attribute's name and contains the attribute's value. Because on most file systems allocating an additional directory plus one or more files requires several disk blocks, such a simple implementation would consume a lot of space, and it would not perform very well because of the time needed to access all these disk blocks. Therefore, most file systems use different mechanisms for storing EAs.
