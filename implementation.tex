@@ -23,11 +23,22 @@ La solution actuel ajoute aux \emph{i\_node} une entrée que s'appelle \emph{i\_
 
 Le mécanisme a aussi une optimisation. Deux fichier avec le même ensemble de ACL point vers le même EA block. Le système guard un \emph{hash map} avec les \emph{checksum} dus blocks EA et leurs adresse. Chaque block a aussi un compteur de référence, comme les lien \emph{hard}. Ce mécanisme aussi détermine que ce compteur la ne peut pas avoir plus que 1024 références. Il s'agit de une mesure de sécurité en cas de perte de les donne.  
 
+Aussi une limitation est imposé, tous les donnes EAs de une fichier doivent occuper une bloque EAs que peut avoir la tailler de 1, 2 ou 4 KBs. 
+
+
+\subsubsection*{JFS}
+
+Dans JFS, les EAs sont ajouter pour l'utilisation de les \emph{extent}. Cette structure n'est que une consécutive liste de bloques. Dans le cas de les EAs, ça veut dire que chaque pair (nom,valeur) est armazenée en sequence
+%consecutive range of blocks - extent
+% si small fits the inode
+% no sharing mecanisme
+% no limitation of 1 block
+% each attribute moin de 64kb
+
+
 \subsubsection*{XFS}
 
-
-
-\subsubsection*{ReiserFs}
+\subsubsection*{ReiserFS}
 \subsubsection*{HGFS+}
 \subsubsection*{Samba}
 \subsubsection*{NFS}
