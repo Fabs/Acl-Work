@@ -15,9 +15,19 @@ Dans le monde linux, aouter le supporte aux ACL avec une version limité des EA 
 
 Dans le monde UNIX, chaque système de fichier a une diffèrent implémentation pour les EAs. On peut penser que une solution partage pour tous les système pouvait être meilleur. Par exemple, si on prendre la une solution simple comme chaque objet du système de fichier qui a les EAs, a une répertoire avec une fichier qui a le clés EA comment le nom et le contenu comment le valeur. Cette implémentation consommerait beaucoup de espace, étant donné que les blocks du système de fichier seront gaspiller pour conserver petit morceaux de donné, aussi ce solution perdrait les temps pour chercher ces information a chaque accès de fichier. Aux frais de ces problèmes chaque système tire profit de ces qualités pour ajouter le supporte aux EAs. 
 
-\subsubsection*{Ext}
+\subsubsection*{Ext (2,3 et 4)}
+
+Les ACL dans Ext suis le principe linux: "La plus simple solution que marche" et pour cette raison on quelques limitations. Autres solutions existent, par contre, elle sont difficile de ajouter au noyaux de manière satisfaire\cite{ext_acl}. 
+
+La solution actuel ajoute aux \emph{i\_node} une entrée que s'appelle \emph{i\_file\_acl}. Cette entrée, si diffèrent de 0, est une pontier pour une EAs block. Cette EAs block a les informations de nom et valeur de tous les ACL du fichier indique pour cette \emph{i\_node}.
+
+Le mécanisme a aussi une optimisation. Deux fichier avec le même ensemble de ACL point vers le même EA block. Le système guard un \emph{hash map} avec les \emph{checksum} dus blocks EA et leurs adresse. Chaque block a aussi un compteur de référence, comme les lien \emph{hard}. Ce mécanisme aussi détermine que ce compteur la ne peut pas avoir plus que 1024 références. Il s'agit de une mesure de sécurité en cas de perte de les donne.  
+
 \subsubsection*{XFS}
-\subsubsection*{Samba}
+
+
+
 \subsubsection*{ReiserFs}
 \subsubsection*{HGFS+}
+\subsubsection*{Samba}
 \subsubsection*{NFS}
