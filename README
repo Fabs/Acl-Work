@@ -27,13 +27,14 @@ Ce fichier contient l'état actuelle de le rapport. Chaque groupe de activité c
 * Installation 
 * Ubuntu et Debian
 * Implémentation
+- Implementation Linux
 * Extended Attributtes
 * Linux
 - Mac
 - Exemple
 
 % Implémentation dans le système de Fichiers 
-- ext[2,3]
+* ext[2,3]
 - jfs
 - xfs
 - samba
@@ -62,3 +63,4 @@ Ce fichier contient l'état actuelle de le rapport. Chaque groupe de activité c
 - Modifié le nom du Algorithme 
 - Traduire le algorithme
 - Preciser sur le footnote dans les acl
+- Search for ext4
