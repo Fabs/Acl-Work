@@ -28,15 +28,11 @@ Aussi une limitation est imposé, tous les donnes EAs de une fichier doivent occ
 
 \subsubsection*{JFS}
 
-Dans JFS, les EAs sont ajouter pour l'utilisation de les \emph{extent}. Cette structure n'est que une consécutive liste de bloques. Dans le cas de les EAs, ça veut dire que chaque pair (nom,valeur) est armazenée en sequence
-%consecutive range of blocks - extent
-% si small fits the inode
-% no sharing mecanisme
-% no limitation of 1 block
-% each attribute moin de 64kb
-
+Dans JFS, les EAs sont ajouter pour l'utilisation de les \emph{extent}. Cette structure n'est que une consécutive liste de bloques. Pour les EAs, ça veut dire que chaque pair (nom,valeur) est garde en séquence, chaque valeur du pair ne peut pas être plus grande que 64kb. Si les EAs sont assez petite, elle pouvons être guard dans le même lieu que les information du fichier. De ce façon, il n'y a pas les limitation de ext3.
 
 \subsubsection*{XFS}
+
+Dans XFS
 
 \subsubsection*{ReiserFS}
 \subsubsection*{HGFS+}
