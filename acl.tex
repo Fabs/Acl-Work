@@ -68,9 +68,9 @@ On peut résoudre ce problème avec un masque. Comme on peut l'observer dans le 
 \end{figure}
  
  
-Pour assurer le consistance/cohérance, quand une application change les permissions (par exemple le commande \emph{chmod}) les ACL sont modifiée de façon a reproduire cette modification.
+Pour assurer le cohérance, quand une application change les permissions (par exemple le commande \emph{chmod}) les ACL sont modifiée de façon a reproduire cette modification.
  
-On a dit que le permission de la classe groupe est calculée comme la limite supérieur de tous les entrée dans le classe group. Avec les ACLs minimaux cette computation est simple, par contre, avec les ACLs étendu, on a besoin de masquer les permissions. Comme l'exemple de le tableau (\ref{tab:masquee}), les entrée de permission qui sont partie de la classe de groupe et qui aussi sont présente dans l'entrée masque sont applique effectivement. Si une permission était absent dans le masque, c'est a dire que aucun entrée de group (qui non le groupe du propriétaire) peut avoir ce permission, on dit dans ce cas qui la entrée est masquée.
+On a dit que la permission de la classe groupe est calculée comme la limite supérieure de tous les entrées dans le classe group. Avec les ACLs minimaux cette computation est simple, par contre, avec les ACLs étendu, on a besoin de masquer les permissions. Comme l'exemple de le tableau (\ref{tab:masquee}), les entrées de permission qui sont partie de la classe de groupe et qui aussi sont présente dans l'entrée masque sont applique effectivement. Si une permission était absent dans le masque, c'est a dire que aucun entrée de group (qui non le groupe du propriétaire) peut avoir ce permission, on dit dans ce cas qui la entrée est masquée.
  
 \begin{center}
 \begin{tabular}{|l|l|l|}
@@ -91,37 +91,42 @@ Masque & mask::rw- & rw-\\
  
 \subsection*{Algorithme de vérification}
  
-Pour vérifier les droits d'accès d'une objet du système de fichier, il y a une algorithme assez simple.\footnote{Il faut traduire cette algorithme lá :-)}
+Pour vérifier les droits d'accès d'une objet du système de fichier, il y a une algorithme assez simple.
  
 %changer le titre et la langue
 \begin{algorithm}
 \caption{Vérifie se une utilisateur peut ou ne peut pas accéder une objet du système de fichier}
 \label{algacl}
 \begin{algorithmic}
-\IF{the user ID of the process is the owner}
-\STATE the owner entry determines access
-\ELSIF{the user ID of the process matches the qualifier in one of the named user entries}
-\STATE this entry determines access
-\ELSIF{one of the group IDs of the process matches the owning group and the owning group entry contains the requested permissions}
-\STATE this entry determines access
-\ELSIF{one of the group IDs of the process matches the qualifier of one of the named group entries and this entry contains the requested permissions}
-\STATE this entry determines access
+\IF{l'identifiant de l'utilisateur du processus est le propriétaire}
+\STATE l'entrée du propriétaire détermine l'accès
+\ELSIF{l'identifiant d'utilisateur du processus correspond à une entrée d'utilisateur nommé dans la table des ACL}
+\STATE l'entrée détermine l'accès
+\ELSIF{un des identifiants de groupe du processus correspond au groupe propriétaire et l'entrée contient les permissions requises}
+\STATE l'entrée détermine l'accès
+\ELSIF{
+un des identifiants de groupes correspond à un des groupe nommés et cette entrée contient les permissions requises}
+\STATE l'entrée détermine l'accès
  
-\ELSIF{one of the group IDs of the process matches the owning group or any of the named group entries, but neither the owning group entry nor any of the matching named group entries contains the requested permissions}
-\STATE this determines that access is denied
+\ELSIF{
+Un des identifiants de groupe du processus correspond au groupe propriétaire ou correspond à un des groupes nommés mais ni le groupe propriétaire ni aucun des groupes nommé contient les permission requises.}
+\STATE ceci détermine que l'accès est interdit
  
 \ELSE
-\STATE the other entry determines access.
+\STATE l'entrée other détermine l'accès
 \ENDIF
  
- 
-\IF{the matching entry resulting from this selection is the owner or other entry and it contains the requested permissions}
-\STATE access is granted
-\ELSIF{the matching entry is a named user, owning group, or named group entry and this entry contains the requested permissions and the mask entry also contains the requested permissions (or there is no mask entry)}
-\STATE access is granted
+%
+\IF{
+l'entrée qui détermine l'accès est l'entre du propriétaire ou l'entrée other qui contient les permissions requises}
+\STATE 
+l'accès est autorisé
+\ELSIF{l'entrée correspondante est l'utilisateur nom, ou le groupe propriétaire ou le groupe nommé et cette entrée contient les permissions requises et l'entrée masque contient aussi les permission. (ou il n'y a pas d'entrée masque)
+}
+\STATE l'accès est autorisé
  
 \ELSE
-\STATE access is denied.
+\STATE l'accès n'est pas autorisé
 \ENDIF
 \end{algorithmic}
 \end{algorithm}
@@ -129,13 +134,13 @@ Pour vérifier les droits d'accès d'une objet du système de fichier, il y a un
  
 \subsection*{Héritage mécanisme}
  
-Le système POSIX règle non seulement les accès aux objets du système, mais aussi sur le mécanisme d'Héritage. Les ACL sont partagés en deux types, les \emph{access ACL} (qu'on a vu jusqu'á maintenant) et les \emph{default ACL} qui comprennent les règles d'héritage.
+Le système POSIX règle non seulement les droits d'accès aux objets du système de fichiers, mais aussi le mécanisme d'Héritage. Les ACL sont partagés en deux types, les \emph{access ACL} (qu'on a vu jusqu'à maintenant) et les \emph{default ACL} qui comprennent les règles d'héritage.
  
-Quand on parle de l'héritage, on parle des droits qui sont attribue aux objet du système pendant au moment où ils sont crées. Il y un seul type d'objet qui peut être associe avec les \emph{default ACL}; les répertoire. Il faut dire que il n'y a aucune sens en donne \emph{default ACL } pour les fichiers, alors que, aucune objet du système peut être crée dans une fichier, aussi, il faut rappeler que les \emph{Default ACL} n'ont pas aucune implication sur les \emph{access ACL}.
+Quand on parle de l'héritage, on parle des droits qui sont attribués aux objets du systèmes de fichiers au moment où ils sont crées. Il y a un seul type d'objet qui peut être associe avec les \emph{default ACL}; les répertoires. Il faut dire que il n'y a pas de sens pour les \emph{default ACL } pour les fichiers car on ne peut pas créer un fichier à l'intérieur d'un fichier. Aussi les \emph{Default ACL} et les \emph{access ACL} sont complètement indépendant.
  
-Si un répertoire est crée dans une autre, si le première répertoire a \emph{default ACL}, d'accord avec le mécanisme de héritage, le deuxième aurais le même ACL qui le première (\emph{default} et \emph{access}). Les objets qui ne sont pas répertoire, devons hérite les \emph{access ACL} seulement.
+Si un répertoire est crée dans une autre, si le première répertoire a \emph{default ACL}, avec le mécanisme d'héritage, le deuxième aura le même ACL que le premier (\emph{default} et \emph{access}). Les objets qui ne sont pas des répertoires, devons hériter les \emph{default ACL} seulement.
  
-Chaque \emph{system call} que crée les objets du système de fichier a une \emph{mode parameter}. Ce paramètre peut contenir neuve octet de permission pour chaque classe (propriétaire, groupe et les autres). Les permission effective de chaque objet crée est l'intersection de les permission défini pour les \emph{default ACL} et les spécification dans le \emph{mode parameter}.
+Chaque \emph{system call} qui crée les objets du système de fichier a un \emph{mode parameter}. Ce paramètre peut contenir neuf octets de permission pour chaque classe (propriétaire, groupe et les autres). Les permissions de chaque objet créée sont l'intersection des permissions définies pour les \emph{default ACL} et le \emph{mode parameter}.
  
-Le système traditionnel a une commande pour designer les modes de permission par défaut pour les nouveau fichiers et répertoires: le commande \emph{umask}. Quand il n'y a aucune \emph{default ACL}, le permission effective est détermine par le paramètre de mode moins les permission configuré avec \emph{umask}.
+Le système traditionnel a une commande pour désigner les modes de permissions par défaut pour les nouveaux fichiers et répertoires: le commande \emph{umask}. Quand il n'y a aucune \emph{default ACL}, la permission effective est déterminé par le \emph{mode parameter} moins les permissions configurés avec \emph{umask}.
  
