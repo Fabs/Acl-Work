@@ -16,15 +16,16 @@ Les ACL sont une évolution du système de permissions traditionnel présent dan
 Le modèle traditionnel POSIX offre trois classes d'utilisateurs qui sont: le propriétaire (\emph{owner}), le groupe propriétaire (\emph{group}) et les autres utilisateurs (\emph{others}). Chaque groupe a un octet que indique les permissions de lecture (\emph{\textbf{r}ead}), d'écriture (\emph{\textbf{w}rite}) et d'exécution (\emph{e\textbf{x}ecute}).
  
 %Explication simple
-Après les trois octets peut venir le \emph{Set User Id}, \emph{Set Group Id} et le \emph{Sticky Bit} qui peuvent être utilisés dans certain cas. Il faut faire attention avec le \emph{Sticky Bit}, il permet aux utilisateurs normaux d'exécuter les utilitaires comme l'administrateur(\emph{root}), donc une faille de sécurité dans une application utilisant le \emph{Sticky Bit} peut compromettre le système entière.
+Après les trois octets peut venir le \emph{Set User Id}, \emph{Set Group Id} et le \emph{Sticky Bit} qui peuvent être utilisés dans certain cas. Il faut faire attention avec le \emph{Sticky Bit}, il permet aux utilisateurs normaux d'exécuter les utilitaires comme l'administrateur(\emph{root}), donc une faille de sécurité dans une application utilisant le \emph{Sticky Bit} peut compromettre le système entier.
  
 %Le droit du root
-Seul le \emph{root} peut créer les groupes et changer les associations de groupes. Celui-là que aussi peut changer les propriétaires.
+Seul le \emph{root} peut créer les groupes et changer les associations de groupes. Il peut aussi changer les propriétaires.
  
 \subsection*{Les ACL}
  
 %Definitions de base
-Dans une modèle d'ACL sécurisés, si une entité fait une requête pour accéder aux données, il faut consulte les ACL pour une entrée que permettre l'opération demandé. Chaque ACL est une ensemble de règles d'accès. Les règles possibles peuventre consultées dans le tableau ci-dessous(\ref{entree}).
+Chaque ACL est une ensemble de règles d'accès. Dans une modèle de sécurité utilisant les ACL, si une entité fait une requête pour accéder aux données, il faut consulter les la liste d'ACL pour savoir si nous avons la permission pour l'opération demandé. Les règles possibles peuvent être consultées dans le tableau ci-dessous(\ref{entree}).
+
 \begin{center}
 \begin{tabular}{|l|l|}
   \hline
@@ -43,20 +44,22 @@ Autres & other::rwx \\
 \label{tab:entree}
 \end{center}
  
-Les règles sont formées par un indicateur de classe (comme les classes du système traditionnel), un quantificateur pour spécifier de quel utilisateur ou groupe on parle et les octet de permission.
+Les règles sont formées par un indicateur de classe (comme les classes du système traditionnel), l'identificateur pour préciser de quel utilisateur ou groupe on parle puis les octets de permissions.
  
-%Une meilleure explication
+%REFAIRE -----------------------------------------------------------------------------------
 Avec cette représentation le sens de la classe du groupe a été redéfini comme le limite supérieur de les permission de chaque entrée dans la classe du groupe. C'était a dire que les entrée du groupe et du utilisateur nommées seront désigner à entrée du groupe. Aussi, c'est importante rappeler que cette choix permettre se prémunir contre les application qui ne sont pas conscient de les ACL.
 \footnote{Fabricio: Je ne comprend pas bien cette affirmation, je laisse ici le teste orignial:
 These named group and named user entries are assigned to the group class, which already contains the owning group entry. Different from the POSIX.1 permission model, the group class may now contain ACL entries with different permission sets, so the group class permissions alone are no longer sufficient to represent all the detailed permissions of all ACL entries it contains. Therefore, the meaning of the group class permissions is redefined: under their new semantics, they represent an upper bound of the permissions that any entry in the group class will grant. This upper bound property ensures that POSIX.1 applications that are unaware of ACLs will not suddenly and unexpectedly start to grant additional permissions once ACLs are supported.}.
  
-Les ACL qui sont équivalent avec le mode simple de permission de fichier s'appellent minimale et ils ont trois entrée. Si les ACL peut avoir plusieurs entrée ont les appelle étendu. Tous les ACL étendu doivent avoir l'entrée masque et peut contenir théoriquement n'importe combien de entrée. On verrais après que ce numéro d'entrée peut-être limitée pour chaque implémentations et que aussi il est important pour la performance.
+Les ACL équivalentes au mode simple de permissions s'appellent les ACL minimales. Si les ACL possèdent des entrées supplémentaires, ont les appelle ACL étendues. Toutes les ACL étendues doivent avoir une entrée masque et peuvent contenir théoriquement autant d'entrées que l'on désire. On verra après que ce numéro d'entrée peut-être limitée pour chaque implémentation et qu'il est aussi important pour les performances.
  
-%EXPLIQUER MELLEIUR
-Dans les ACL minimale les permission de classe groupe sont égale à les permission de groupe propriétaire, cependant, dans les ACL étendu on peut avoir les entrée avec plusieurs utilisateurs et/ou groupes, quelques de cette entrées peut-être contenir permissions qui la classe groupe n'aurais pas, alors, on peut avoir une inconsistance basée en le cas qui les permissions du groupe propriétaire sont diffèrent de les permission de la classe groupe.
+%EXPLIQUER MIEUX
+Dans les ACL étendues on peut avoir des entrées avec plusieurs utilisateurs et/ou groupes, quelques de cette entrées peut-être contenir permissions qui la classe groupe n'aurais pas, alors, on peut avoir une inconsistance basée en le cas qui les permissions du groupe propriétaire sont diffèrent de les permission de la classe groupe.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  
-On peut résoudre ce problème avec un masque. Comme on peut observer dans le figure (\ref{fig:img_acl-mapping}), il y a deux cas: les classes du groupe sont référencée pour l'entrée de la masque (ACL minimale) ou les permission de la classe groupe seront déguise pour la masque tandis que les permission de l'entrée du groupe propriétaire encore définit les permission pour le groupe propriétaire (ACL étendu).
- 
+On peut résoudre ce problème avec un masque. Comme on peut l'observer dans le figure (\ref{fig:img_acl-mapping}), il y a deux cas:  Les ACL minimales où la classe groupe est référencée pour l'entrée du groupe propriétaire. Les ACL étendues de la classe groupe seront trouvées en faisant un masque avec les permissions du groupe propriétaire et les permissions des utilisateurs nommés mais si l'entrée de permission du groupe propriétaire possède des droits supérieurs au masque ils seront conservés. Cela rend difficile le calcul de classe groupe. 
+
 \begin{figure}[htbp]
 \centering
 \includegraphics[height=3in]{img/acl-mapping.jpg}
