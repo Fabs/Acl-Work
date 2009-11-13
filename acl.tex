@@ -1,137 +1,138 @@
 \section{Le POSIX 1003.1}
-
-Traditionnellement les système qui implémentaient les patron POSIX avaient une système simple et puissante de permission, quand même, certain problèmes ont arrivé. Pour longtemps ça était une zone grise, avec plusieurs non compatible travailles pour résoudre ces problème.
-
-Éventuellement la nécessite de régler sur le domaine de sécurise (les ACL comprendre), une groupe a était forme pendant la définition de la famille de patron POSIX 1003.1. Les premières documents POSIX qui ont été considère ces question étaient les document 1003.1e (\emph{System Application Programming Interface}) et 1003.2c (\emph{Shell and Utilities}), cependant, la première approximation de ce sujet était trop ambitieuse. Les groupe responsable pour le patronisation avait centre ces effort dans une tas assez grande de choses, lesquelles  comprenant \emph{Access Control Lists} (ACL), \emph{Audit}, \emph{Capability},\emph{ Mandatory Access Control }(MAC), et \emph{Information Labeling}\cite{aclsuse}.
-
-En Janvier de 1998\cite{aclsuse} le financement pour ce projet était fini, par contre, le travaille n'était pas prés. De toute façon le dixsèptieme brouillon a été publique quand même\cite{posix17}.
-
-Après cette publication, quelques système UNIX appelé "\emph{trusted}" (Trusted Solaris, Trusted Irix, Trusted AIX) ont été développer avec parts de la documentation 17. Ces systèmes ne sont pas complètement compatible entre eux. Heureusement aujourd'hui la plupart des système UNIX et UNIX-like support ACL. Ces implémentations sont usuellement compatible avec le document 17. Le projet TrustedBSD aussi avait ajouter les ACL sur les système BSD. Les ACL e les MAC FreeBSD-RELEASE ont apparu en 2003.
-
-Les base des ACL sont lancé sur le système traditionnel présent usuellement dans presque tous les système UNIX, alors, avant de préciser sur les ACL on parlerais du modelé traditionnel.
-
-\subsection*{Système de permission Traditionnel}
-
-%Les groups e les permission
-Le modelé traditionnel POSIX offre trois groupes de utilisateur qui sont le propriétaire (\emph{owner}), le groupe du propriétaire (\emph{group}) et les autres utilisateurs (\emph{others}). Chaque groupe a une octet que indique les permission de lecture (\emph{\textbf{r}ead}), écrire (\emph{\textbf{w}rite}) et exécution (\emph{e\textbf{x}ecute}). La première classe fournit les permission pour le utilisateur que rempli le rôle de propriétaire, ensuite, vient les droits pour le groupe principale du propriétaire enfin les droites pour touts les autres utilisateurs. 
+ 
+Traditionnellement les systèmes qui implémentaient la norme POSIX avaient un système simple et puissant de permissions mais qui cependant posait certains problèmes. En effet, les différentes versions d'ACL disponibles étaient incompatibles entre elles.
+ 
+Pour normaliser les problème de sécurité sur les systèmes POSIX (ACL en faisant partie), un groupe a été formé pendant la définition de la famille de normes POSIX 1003.1. Les premiers documents POSIX qui ont pris en compte ces questions étaient les documents 1003.1e (\emph{System Application Programming Interface}) et 1003.2c (\emph{Shell and Utilities}), cependant, le premier draft était trop ambitieux. En effet, le groupe responsable pour la normalisation avait divisé ses efforts sur un grand nombre de domaines qui comportaient les \emph{Access Control Lists} (ACL), les \emph{Audit}, les \emph{Capability},les \emph{ Mandatory Access Control }(MAC), et l'\emph{Information Labeling}\cite{aclsuse}.
+ 
+En Janvier de 1998\cite{aclsuse} le financement pour ce projet à été suspendu, par contre, le travail n'était pas prêt. De toute façon le dixsèptieme draft a quand même été rendu public\cite{posix17}.
+ 
+Après cette publication, des systèmes UNIX appelés "\emph{trusted}" (Trusted Solaris, Trusted Irix, Trusted AIX) ont été développés à partir du draft 17. Ces systèmes ne sont pas complètement compatibles entre eux. Heureusement aujourd'hui la plupart des systèmes UNIX et UNIX-like supportent les ACL. Ces implémentations sont usuellement compatibles avec le draft 17. Le projet TrustedBSD implémente aussi les ACL sur les système BSD. Les ACL sont apparues sur les Macs en 2003 avec la RELEASE MAC FreeBSD.
+ 
+Les ACL sont une évolution du système de permissions traditionnel présent dans pratiquement tous les systèmes UNIX, alors, avant d'expliquer les ACL on va d'abord parler du modèle traditionnel.
+ 
+\subsection*{Système de permissions traditionnel}
+ 
+%Les groups et les permissions
+Le modèle traditionnel POSIX offre trois classes d'utilisateurs qui sont: le propriétaire (\emph{owner}), le groupe propriétaire (\emph{group}) et les autres utilisateurs (\emph{others}). Chaque groupe a un octet que indique les permissions de lecture (\emph{\textbf{r}ead}), d'écriture (\emph{\textbf{w}rite}) et d'exécution (\emph{e\textbf{x}ecute}).
  
 %Explication simple
-Après les trois octets peut venir le \emph{Set User Id}, \emph{Set Group Id} et \emph{Sticky bit}, lesquelles sont utilisé dans certain cases. Il faut faire attention avec le \emph{Sticky Bit}, il permit les utilisateur normale d'exécuter les utilitaire comme l'administrateur(\emph{root}), donc, quelque manque de sécurité peut compromettre le système entière.
-
+Après les trois octets peut venir le \emph{Set User Id}, \emph{Set Group Id} et le \emph{Sticky Bit} qui peuvent être utilisés dans certain cas. Il faut faire attention avec le \emph{Sticky Bit}, il permet aux utilisateurs normaux d'exécuter les utilitaires comme l'administrateur(\emph{root}), donc une faille de sécurité dans une application utilisant le \emph{Sticky Bit} peut compromettre le système entière.
+ 
 %Le droit du root
-Seulement le \emph{root} peut créer les groupes e changer les association de groupes. Celui-là que aussi peut changer les propriétaire. 
-
+Seul le \emph{root} peut créer les groupes et changer les associations de groupes. Celui-là que aussi peut changer les propriétaires.
+ 
 \subsection*{Les ACL}
-
-%Basic Definitions
-Dans une modèle de de sécurise ACL, si quelque agent faire une requête pour accéder aux donnés, il faut consulte les ACL pour une entrée que permettre l'opération demandé. Chaque ACL est une ensemble de règles d'accès. Les règles possible peut être regarder dans le tableau ci-dessous(\ref{entree}).
+ 
+%Definitions de base
+Dans une modèle d'ACL sécurisés, si une entité fait une requête pour accéder aux données, il faut consulte les ACL pour une entrée que permettre l'opération demandé. Chaque ACL est une ensemble de règles d'accès. Les règles possibles peuventre consultées dans le tableau ci-dessous(\ref{entree}).
 \begin{center}
 \begin{tabular}{|l|l|}
   \hline
     \multicolumn{2}{|c|}{Les types de ACL} \\
   \hline
-	\textbf{Type d'entrée} & \textbf{format} \\
+\textbf{Type d'entrée} & \textbf{format} \\
   \hline
-	Propriétaire & user::rwx \\
-	Utilisateur nommée & user:name:rwx  \\
-	Groupe propriétaire & group::rwx \\
-	Groupe nommée & group:name:rwx \\
-	Masque & mask::rwx \\
-	Autres & other::rwx \\   
+Propriétaire & user::rwx \\
+Utilisateur nommée & user:name:rwx \\
+Groupe propriétaire & group::rwx \\
+Groupe nommée & group:name:rwx \\
+Masque & mask::rwx \\
+Autres & other::rwx \\
   \hline
 \end{tabular}
 \label{tab:entree}
 \end{center}
-
-Le format des règles sont formée par une indicateur de classe (comme les classe du système Traditionnel), une quantificateur pour spécifier de quel utilisateur ou groupe on parle et les octet de permission.
-
-%EXPLIQUER MELLEIUR
+ 
+Les règles sont formées par un indicateur de classe (comme les classes du système traditionnel), un quantificateur pour spécifier de quel utilisateur ou groupe on parle et les octet de permission.
+ 
+%Une meilleure explication
 Avec cette représentation le sens de la classe du groupe a été redéfini comme le limite supérieur de les permission de chaque entrée dans la classe du groupe. C'était a dire que les entrée du groupe et du utilisateur nommées seront désigner à entrée du groupe. Aussi, c'est importante rappeler que cette choix permettre se prémunir contre les application qui ne sont pas conscient de les ACL.
-\footnote{Fabricio: Je ne comprend pas bien cette affirmation, je laisse ici le teste orignial: 
+\footnote{Fabricio: Je ne comprend pas bien cette affirmation, je laisse ici le teste orignial:
 These named group and named user entries are assigned to the group class, which already contains the owning group entry. Different from the POSIX.1 permission model, the group class may now contain ACL entries with different permission sets, so the group class permissions alone are no longer sufficient to represent all the detailed permissions of all ACL entries it contains. Therefore, the meaning of the group class permissions is redefined: under their new semantics, they represent an upper bound of the permissions that any entry in the group class will grant. This upper bound property ensures that POSIX.1 applications that are unaware of ACLs will not suddenly and unexpectedly start to grant additional permissions once ACLs are supported.}.
-
+ 
 Les ACL qui sont équivalent avec le mode simple de permission de fichier s'appellent minimale et ils ont trois entrée. Si les ACL peut avoir plusieurs entrée ont les appelle étendu. Tous les ACL étendu doivent avoir l'entrée masque et peut contenir théoriquement n'importe combien de entrée. On verrais après que ce numéro d'entrée peut-être limitée pour chaque implémentations et que aussi il est important pour la performance.
-
+ 
 %EXPLIQUER MELLEIUR
-Dans les ACL minimale les permission de classe groupe sont égale à les permission de groupe propriétaire, cependant, dans les ACL étendu on peut avoir les entrée avec plusieurs utilisateurs et/ou groupes, quelques de cette entrées peut-être contenir permissions qui la classe groupe n'aurais pas, alors, on peut avoir une inconsistance basée en le cas qui les permissions du groupe propriétaire sont diffèrent de les permission de la classe groupe. 
-
-On résoudre ce problème avec le masque. Comme on peut observer dans le figure (\ref{fig:img_acl-mapping}), il y a deux cas: les classe du groupe sont référencée pour l'entrée de la masque (ACL minimale) ou les permission de la classe groupe seront déguise pour la masque tandis que les permission de l'entrée du groupe propriétaire encore définit les permission pour le groupe propriétaire (ACL étendu).    
-
+Dans les ACL minimale les permission de classe groupe sont égale à les permission de groupe propriétaire, cependant, dans les ACL étendu on peut avoir les entrée avec plusieurs utilisateurs et/ou groupes, quelques de cette entrées peut-être contenir permissions qui la classe groupe n'aurais pas, alors, on peut avoir une inconsistance basée en le cas qui les permissions du groupe propriétaire sont diffèrent de les permission de la classe groupe.
+ 
+On peut résoudre ce problème avec un masque. Comme on peut observer dans le figure (\ref{fig:img_acl-mapping}), il y a deux cas: les classes du groupe sont référencée pour l'entrée de la masque (ACL minimale) ou les permission de la classe groupe seront déguise pour la masque tandis que les permission de l'entrée du groupe propriétaire encore définit les permission pour le groupe propriétaire (ACL étendu).
+ 
 \begin{figure}[htbp]
-	\centering
-		\includegraphics[height=3in]{img/acl-mapping.jpg}
-	\caption{caption}
-	\label{fig:img_acl-mapping}
+\centering
+\includegraphics[height=3in]{img/acl-mapping.jpg}
+\caption{caption}
+\label{fig:img_acl-mapping}
 \end{figure}
-
-
-Pour assurer le consistance, quand une application change les permission (par exemple le commande \emph{chmod}) les ACL sont modifiée de façon a reproduire ce modification. 
-
-On a dit que le permission de la classe groupe est calculée comme le limite supérieur de tous les entrée dans le classe group. Avec les ACLs minimaux cette computation est simple, par contre, avec les ACLs étendu, on a besoin de masquer les permissions. Comme l'exemple de le tableau (\ref{tab:masquee}), les entrée de permission qui sont partie de la classe de groupe et qui aussi sont présente dans l'entrée masque sont applique effectivement. Si une permission était absent dans le masque, c'est a dire que aucun entrée de group (qui non le groupe du propriétaire) peut avoir ce permission, on dit dans ce cas qui la entrée est masquée.  
-
+ 
+ 
+Pour assurer le consistance/cohérance, quand une application change les permissions (par exemple le commande \emph{chmod}) les ACL sont modifiée de façon a reproduire cette modification.
+ 
+On a dit que le permission de la classe groupe est calculée comme la limite supérieur de tous les entrée dans le classe group. Avec les ACLs minimaux cette computation est simple, par contre, avec les ACLs étendu, on a besoin de masquer les permissions. Comme l'exemple de le tableau (\ref{tab:masquee}), les entrée de permission qui sont partie de la classe de groupe et qui aussi sont présente dans l'entrée masque sont applique effectivement. Si une permission était absent dans le masque, c'est a dire que aucun entrée de group (qui non le groupe du propriétaire) peut avoir ce permission, on dit dans ce cas qui la entrée est masquée.
+ 
 \begin{center}
 \begin{tabular}{|l|l|l|}
   \hline
     \multicolumn{3}{|c|}{La masque de permissionL} \\
   \hline
-	\textbf{Type} & \textbf{Format} & \textbf{Permission} \\
+\textbf{Type} & \textbf{Format} & \textbf{Permission} \\
   \hline
-	Utilisateur nommée & user:jean:r-x  & r-x\\
+Utilisateur nommée & user:jean:r-x & r-x\\
   \hline
-	Masque & mask::rw- & rw-\\
+Masque & mask::rw- & rw-\\
   \hline
-	\multicolumn{2}{|c|}{Permission Effective} & r--\\
+\multicolumn{2}{|c|}{Permission Effective} & r--\\
   \hline
 \end{tabular}
 \label{tab:masque}
 \end{center}
-
+ 
 \subsection*{Algorithme de vérification}
-
-Pour vérifier les droits d'accès de une objet du système de fichier il y a une algorithme assez simple.\footnote{Il faut traduire cette algorithme lá :-)}
-
+ 
+Pour vérifier les droits d'accès d'une objet du système de fichier, il y a une algorithme assez simple.\footnote{Il faut traduire cette algorithme lá :-)}
+ 
 %changer le titre et la langue
 \begin{algorithm}
 \caption{Vérifie se une utilisateur peut ou ne peut pas accéder une objet du système de fichier}
 \label{algacl}
 \begin{algorithmic}
 \IF{the user ID of the process is the owner}
-	\STATE the owner entry determines access
+\STATE the owner entry determines access
 \ELSIF{the user ID of the process matches the qualifier in one of the named user entries}
-	\STATE this entry determines access 
-\ELSIF{one of the group IDs of the process matches the owning group and the owning group entry contains the requested permissions} 
-	\STATE this entry determines access
+\STATE this entry determines access
+\ELSIF{one of the group IDs of the process matches the owning group and the owning group entry contains the requested permissions}
+\STATE this entry determines access
 \ELSIF{one of the group IDs of the process matches the qualifier of one of the named group entries and this entry contains the requested permissions}
-	\STATE this entry determines access
+\STATE this entry determines access
  
-\ELSIF{one of the group IDs of the process matches the owning group or any of the named group entries, but neither the owning group entry nor any of the matching named group entries contains the requested permissions} 
+\ELSIF{one of the group IDs of the process matches the owning group or any of the named group entries, but neither the owning group entry nor any of the matching named group entries contains the requested permissions}
 \STATE this determines that access is denied
-
+ 
 \ELSE
-	\STATE the other entry determines access.
+\STATE the other entry determines access.
 \ENDIF
  
-
+ 
 \IF{the matching entry resulting from this selection is the owner or other entry and it contains the requested permissions}
-	\STATE access is granted 
+\STATE access is granted
 \ELSIF{the matching entry is a named user, owning group, or named group entry and this entry contains the requested permissions and the mask entry also contains the requested permissions (or there is no mask entry)}
-	\STATE access is granted
+\STATE access is granted
  
 \ELSE
-	\STATE access is denied.
+\STATE access is denied.
 \ENDIF
 \end{algorithmic}
 \end{algorithm}
-
-
+ 
+ 
 \subsection*{Héritage mécanisme}
-
-Le patron POSIX règle non seulement sur les accès des objet du système, mais aussi sur le mécanisme de Héritage. Les ACL sont partage en deux type, les \emph{access ACL} (que on a vu jusqu'á maintenant) et les \emph{default ACL} qui comprendre les règles de héritage.  
-
-Quand on parle de l'héritage on parle de les droits qui sont attribue aux objet du système pendant le moment en que il sont crée. Il y une seul type de objet qui peut être associe avec les \emph{default ACL}; les répertoire. Il faut dire que il n'y a aucune sens en donne \emph{default ACL } pour les fichiers, alors que, aucune objet du système peut être crée dans une fichier, aussi, il faut rappeler que les \emph{Default ACL} n'ont pas aucune implication sur les \emph{access ACL}.
-
-Si une répertoire est crée dans une autre, si le première répertoire a \emph{default ACL}, d'accord avec le mécanisme de héritage,  le deuxième aurais le même ACL qui le première (\emph{default} et \emph{access}). Les objets qui ne sont pas répertoire, devons hérite les \emph{access ACL} seulement. 
-
+ 
+Le système POSIX règle non seulement les accès aux objets du système, mais aussi sur le mécanisme d'Héritage. Les ACL sont partagés en deux types, les \emph{access ACL} (qu'on a vu jusqu'á maintenant) et les \emph{default ACL} qui comprennent les règles d'héritage.
+ 
+Quand on parle de l'héritage, on parle des droits qui sont attribue aux objet du système pendant au moment où ils sont crées. Il y un seul type d'objet qui peut être associe avec les \emph{default ACL}; les répertoire. Il faut dire que il n'y a aucune sens en donne \emph{default ACL } pour les fichiers, alors que, aucune objet du système peut être crée dans une fichier, aussi, il faut rappeler que les \emph{Default ACL} n'ont pas aucune implication sur les \emph{access ACL}.
+ 
+Si un répertoire est crée dans une autre, si le première répertoire a \emph{default ACL}, d'accord avec le mécanisme de héritage, le deuxième aurais le même ACL qui le première (\emph{default} et \emph{access}). Les objets qui ne sont pas répertoire, devons hérite les \emph{access ACL} seulement.
+ 
 Chaque \emph{system call} que crée les objets du système de fichier a une \emph{mode parameter}. Ce paramètre peut contenir neuve octet de permission pour chaque classe (propriétaire, groupe et les autres). Les permission effective de chaque objet crée est l'intersection de les permission défini pour les \emph{default ACL} et les spécification dans le \emph{mode parameter}.
-
-Le système traditionnel a une commande pour designer les modes de permission par défaut pour les nouveau fichiers et répertoires: le commande \emph{umask}. Quand il n'y a aucune \emph{default ACL}, le permission effective est détermine par le paramètre de mode moins les permission configuré avec \emph{umask}. 
+ 
+Le système traditionnel a une commande pour designer les modes de permission par défaut pour les nouveau fichiers et répertoires: le commande \emph{umask}. Quand il n'y a aucune \emph{default ACL}, le permission effective est détermine par le paramètre de mode moins les permission configuré avec \emph{umask}.
+ 
