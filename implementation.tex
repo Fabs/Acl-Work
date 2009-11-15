@@ -1,40 +1,215 @@
-\section{Implémentassions}
-
+\section{Implèmentassions}
+ 
 %il faut ajouter references
-Les ACLs sont fréquemment implémentent comme extensions du noyaux, ça veut dire modules dans le LINUX contexte. L'objectif de ce cession c'est explique superficiellement les questions concernant les implémentions de les ACL. Le discussion doit lancer la base pour les évaluations de performance et les problèmes dans les sessions prochaines.
+Les ACLs sont frèquemment implèmentèes comme extensions du noyau, c'est à dire des modules un systéme LINUX. L'objectif de cette section est d'expliquer de maniére globale l'implèmentions des ACL. 
 
-"Les ACLs sont morceaux d'information de taille variable qui sont associe avec les objet du système de fichier"\cite{aclsuse}. Plusieurs implémentations de cette modelé sont possible. Par exemple, avec Solaris dans le système de fichier UFS\cite{acl_permission} chaque \emph{inode} peut être avoir une ACL. Si il en a, il doit avoir l'information \emph{i\_shadow}, une pointeur pour une \emph{shadow inode}. Les \emph{shadow inode} sont comment fichiers régulières d'utilisateurs. Diffèrent fichier avec les mêmes ACL peut avoir pointeurs pour le même \emph{shadow inodes}. Les information des ACL sont garde dans les bloque de donné de chaque \emph{shadow inodes}.
-
-La capacité de associer morceaux d'information avec fichiers est utilisé pour plusieurs fonctions du système de exploitation, alors, en la plupart de ces systèmes \emph{UNIX-like} (Linux comprendre) on trouve les Attributs Étendu (\emph{Extended Attributes (EAs)}). Les ACL sont implémentent avec ce mécanisme.
-
-Le linux page de manuel\cite{aclsuse} \emph{attr(5)} contienne une explication précise sur les EAs dans linux, au notre but, suffi dire que comme les variables des processus, les EAs sont pairs (nom, valeur) associe de manier persistant avec les objet du système de fichier et que les appel de système linux, dans le espace de utilisateur, sont employé pour opérer sur les information de ces pairs dans le espace de adresse du noyaux. Aussi pour l'implémentation de cette infrastructure dans les système FreeBSD il faut voir le article de Robert Watson\cite{trust}. Cette article content aussi une comparaison de plusieurs implémentation de ces système. 
-
-Dans le monde linux, aouter le supporte aux ACL avec une version limité des EA offre plusieurs avantages: Facilité de implémentation, opération atomique et interface \emph{stateless} que laisse aucun surcharge à cause de les \emph{file handlers}. On verrais après dans le cession de performance, que l'efficience est assez importante pour être oublier quand on parle de les donnés fréquentent accès comme les ACL.   
-
-\subsection{Les EAs e les système de fichiers}
-
-Dans le monde UNIX, chaque système de fichier a une diffèrent implémentation pour les EAs. On peut penser que une solution partage pour tous les système pouvait être meilleur. Par exemple, si on prendre la une solution simple comme chaque objet du système de fichier qui a les EAs, a une répertoire avec une fichier qui a le clés EA comment le nom et le contenu comment le valeur. Cette implémentation consommerait beaucoup de espace, étant donné que les blocks du système de fichier seront gaspiller pour conserver petit morceaux de donné, aussi ce solution perdrait les temps pour chercher ces information a chaque accès de fichier. Aux frais de ces problèmes chaque système tire profit de ces qualités pour ajouter le supporte aux EAs. 
-
+------------------Le discussion doit lancer la base pour les èvaluations de performance et les problémes dans les sessions prochaines.----------
+ 
+"Les ACLs sont des informations de taille variable qui sont associèes avec les objets du systéme de fichier"\cite{aclsuse}. Plusieurs implèmentations des ACLs sont possibles. Par exemple, avec Solaris, dans le systéme de fichier UFS\cite{acl_permission} chaque \emph{inode} peut avoir une ACL. S'l en a une, il doit avoir l'information \emph{i\_shadow}, un pointeur pour un \emph{shadow inode}. Les \emph{shadow inode} sont comment fichiers règuliérs d'utilisateurs. Différent fichiers avec les mÍmes ACL peut avoir pointeurs pour le mÍme \emph{shadow inodes}. Les information des ACL sont garde dans les bloc de donnèes de chaque \emph{shadow inodes}.
+ 
+La capacitè d'associer des informations avec des fichiers est utilisè dans plusieurs fonctions du systéme de exploitation. De ce fait, la plupart des systémes \emph{UNIX-like} (de type Linux) on trouve les Attributs …tendus (\emph{Extended Attributes (EAs)}). Les ACL sont implèmentèes avec ce mècanisme.
+ 
+La manpage \cite{aclsuse} \emph{attr(5)} contient des explications prècises sur les EAs dans Linux, ------------au notre but, suffit dire que comme les variables des processus, les EAs sont des paires (nom, valeur) associèes de maniére persistantes avec les objets du systéme de fichiers et que les appels Linux, dans le espace de utilisateur, sont employè pour opèrer sur les information de ces paires dans le espace de adresse du noyaux. Aussi pour l'implèmentation de cette infrastructure dans les systéme FreeBSD il faut voir le article de Robert Watson\cite{trust}. -------------------------------Cette article content aussi une comparaison de plusieurs implèmentation de ces systéme.
+ 
+Dans le monde linux, ajouter le support aux ACL avec une version limitèe des EA offre plusieurs avantages: un grande facilitè d'implèmentation, ----------------opèration atomique et interface \emph{stateless} que laisse aucun surcharge à cause de les \emph{file handlers}. On verra aprés dans la section de performance, que l'efficience est assez importante pour Ítre oublier quand on parle de les donnès frèquentent accés comme les ACL.-----------------
+ 
+\subsection{Les EAs et les systémes de fichiers}
+ 
+Dans le monde UNIX, chaque systéme de fichier a une différent implèmentation pour les EAs. On peut penser qu'une solution partagèe pour l'ensemble des systémes pourait Ítre plus efficace. Par exemple, si on prend une solution simple où chaque objet du systéme de fichiers a les EAs, un rèpertoire avec un fichier qui a le clès EA comment le nom et le contenu comment le valeur. Cette implèmentation consommerait beaucoup de espace, ètant donnè que les blocks du systéme de fichier seront gaspillès pour conserver petit morceaux de donnè, aussi ce solution perdrait les temps pour chercher ces information a chaque accés de fichier. Aux frais de ces problémes chaque systéme tire profit de ces qualitès pour ajouter le supporte aux EAs.
+ 
 \subsubsection*{Ext (2,3 et 4)}
-
-Les ACL dans Ext suis le principe linux: "La plus simple solution que marche" et pour cette raison on quelques limitations. Autres solutions existent, par contre, elle sont difficile de ajouter au noyaux de manière satisfaire\cite{ext_acl}. 
-
-La solution actuel ajoute aux \emph{i\_node} une entrée que s'appelle \emph{i\_file\_acl}. Cette entrée, si diffèrent de 0, est une pontier pour une EAs block. Cette EAs block a les informations de nom et valeur de tous les ACL du fichier indique pour cette \emph{i\_node}.
-
-Le mécanisme a aussi une optimisation. Deux fichier avec le même ensemble de ACL point vers le même EA block. Le système guard un \emph{hash map} avec les \emph{checksum} dus blocks EA et leurs adresse. Chaque block a aussi un compteur de référence, comme les lien \emph{hard}. Ce mécanisme aussi détermine que ce compteur la ne peut pas avoir plus que 1024 références. Il s'agit de une mesure de sécurité en cas de perte de les donne.  
-
-Aussi une limitation est imposé, tous les donnes EAs de une fichier doivent occuper une bloque EAs que peut avoir la tailler de 1, 2 ou 4 KBs. 
-
-
+ 
+Les ACL dans Ext suivent le principe linux: "La solution la plus simple qui marche" et pour cette raison subviennent quelques limitations. D'autres solutions existent, par contre, elle sont difficiles à ajouter au noyau de maniére satisfaisante\cite{ext_acl}.
+ 
+La solution actuelle ajoute aux \emph{i\_node} une entrèe qui s'appelle \emph{i\_file\_acl}. Cette entrèe, si différent de 0, est une ponteur sur un bloc d'EAs. Ce bloc d'EAs a les informations de nom et valeur de tous les ACL du fichier indiquè pour cet \emph{i\_node}.
+ 
+Le mècanisme a aussi une optimisation. Deux fichiers avec le mÍme ensemble de ACL point vers le mÍme bloc d'EAs. Le systéme garde une \emph{hash map} avec les \emph{checksum} des blocs d'EAs et leurs adresse. Chaque block a aussi un compteur de rèfèrence, comme les liens \emph{hard}. Ce mècanisme dètermine aussi que ce compteur là ne peut pas avoir plus que 1024 rèfèrences. Il s'agit d'une mesure de sècuritè en cas de perte des donnèes.
+ 
+Aussi une limitation est imposèe: toutes les donnèes des EAs d'un fichier doivent occuper un bloc d'EAs ayant une taille de 1, 2 ou 4 KBs.
+ 
+ 
 \subsubsection*{JFS}
-
-Dans JFS, les EAs sont ajouter pour l'utilisation de les \emph{extent}. Cette structure n'est que une consécutive liste de bloques. Pour les EAs, ça veut dire que chaque pair (nom,valeur) est garde en séquence, chaque valeur du pair ne peut pas être plus grande que 64kb. Si les EAs sont assez petite, elle pouvons être guard dans le même lieu que les information du fichier. De ce façon, il n'y a pas les limitation de ext3.
-
+ 
+Dans JFS, les EAs sont ajoutèes dans une liste consècutive de blocs contigus (un extent).  Cela veut dire que chaque paire (nom,valeur) est gardèe en sèquence et que chaque valeur de la paire ne peut pas Ítre plus grande que 64kb. Si les EAs sont assez petites, elles pourrons Ítre gardèes dans le mÍme lieu que les informations du fichier. De ce faÁon, il n'y a pas les limitations d'ext3.
+ 
 \subsubsection*{XFS}
-
-Dans XFS
-
+XFS est sans aucun dout le systéme de fichiers le plus simple pour implèmenter les EA. Les paires d'EA de petite tailles sont stockèes directement dans l'inode, celles de taille moyenne sont stockèes dans les blocs feuilles de l'arbre binaire et pour celle de grande taille, dans un arbre binaire complet.------------manque--------
+XFS peut configurer la taille de sa table d'inodes. La taille minimale est de 256 octet et la taille maximale peut aller jusqu'à la moitiè des blocs du systéme de fichier. Dans le cas où on a une table de taille minimale, celle-ci n'est pas assez grande pour accueillir les ACLs. On doit alors les stocker de maniére externe ----au systéme de fichier----. Si on augmente la taille de la table les ACL pourront y Ítre stockèes. Les ACL ètant trés souvent interrogèes par le systéme, cela augmente les performances en terme de temps d'accés au dètriment de l'espace disque qu'elles consomment.
+XFS n'a pas de mècanisme de partage des attributs. La taille individuelle des attributs est limitèe à 64Kb.
+ 
 \subsubsection*{ReiserFS}
+ReiserFS support le \emph{tail merging} qui permet à plusieurs fichiers de partager le mÍme bloc pour stocker leurs donnèes. Cela rend le systéme trés efficace pour s'il on posséde de nombreux fichiers de petite taille. De l'autre cÙtè cette technique consomme beaucoup de ressources CPU. 
+
+Comme le ReiserFs peut facilement manipuler des petits fichiers, les EA peuvent Ítre implèmentèes sous forme de petits fichiers. Pour chaque fichiers qui a un EA, un dossier spècial (qui est souvent cachè) est crèè avec un nom dèrivè de son inode. Dans ce dossier chaque EA est stockèe dans un fichier sèparè qui a pour nom le nom de l'attribut. Le contenu de chaque fichier est la valeur de l'attribut.
+
+Le systéme ReiserFS n'implèmente pas le partage d'attributs mais la crèation d'une extension pour le gèrer est possible. La taille individuelle des attributs est limitèe à 64Kb.
+
+----------------------Sharing could even be implemented
+on a per-attribute bases, so the result would be
+a highly efficient and flexible solution. --------------The size of individual
+attributes is limited to 64 KiB.
+
 \subsubsection*{HGFS+}
 \subsubsection*{Samba}
+MicrosoftWindows supports ACLs on its NTFS file system,
+and in its Common Internet File System (CIFS)
+protocol [20], which formerly has been known as the
+Server Message Block (SMB) protocol. CIFS is used to
+offer file and print services over a network. Samba is an
+Open Source implementation of CIFS. It is used to offer
+UNIX file and print services to Windows users. Samba
+allows POSIX ACLs to be manipulated from Windows.
+This feature adds a new quality of interoperability between
+UNIX and Windows.
+The ACL model of Windows differs from the POSIX
+ACL model in a number of ways, so it is not possible to
+offer entirely seamless integration. The most significant
+differences between these two kinds of ACLs are: Windows ACLs support over ten different permissions
+for each entry in an ACL, including things
+such as append and delete, change permissions,
+take ownership, and change ownership. Current
+implementations of POSIX.1 ACLs only support
+read, write, and execute permissions.
+In the POSIX permission check algorithm, the most
+significant ACL entry defines the permissions a
+process is granted, so more detailed permissions
+are constructed by adding more closely matching
+ACL entries when needed. In the Windows ACL
+model, permissions are cumulative, so permissions
+that would otherwise be granted can only be restricted
+by DENY ACL entries.
+POSIX ACLs do not support ACL entries that deny
+permissions. A user can be denied permissions be
+creating an ACL entry that specifically matches the
+user.
+Windows ACLs have had an inheritance model that
+was similar to the POSIX ACL model. Since Windows
+2000, Microsoft uses a dynamic inheritance
+model that allows permissions to propagate down
+the directory hierarchy when permissions of parent
+directories are modified. POSIX ACLs are inherited
+at file create time only.
+ In the POSIX ACL model, access and default ACLs
+are orthogonal concepts. In the Windows ACL
+model, several different flags in each ACL entry
+control when and how this entry is inherited by container
+and non-container objects.
+ Windows ACLs have different concepts of how permissions
+are defined for the file owner and owning
+group. The owning group concept has only been
+added with Windows 2000. This leads to different
+results if file ownership changes.
+ POSIX ACLs have entries for the owner and the
+owning group both in the access ACL and in the
+default ACL. At the time of checking access to an
+object, these entries are associated with the current
+owner and the owning group of that object. Windows
+ACLs support two pseudo groups called Creator
+Owner and Creator Group that serve a similar
+purpose for inheritable permissions, but do not allow
+these pseudo groups for entries that define access.
+When an object inherits permissions, those
+abstract entries are converted to entries for a specific
+user and group.
+Despite the semantic mismatch between these two
+ACL systems, POSIX ACLs are presented in the Windows
+ACL editor dialog box so that they resemble nativeWindows
+ACLs pretty closely. Occasional users are
+unlikely to realize the differences. Experienced administrators
+will nevertheless be able to detect a few differences.
+The mapping between POSIX and Windows
+ACLs described here is found in this form in the SuSE
+and the UnitedLinux products, while the official version
+of Samba has not yet integrated all the improvements recently
+made:
+ The permissions in the POSIX access ACL are
+mapped to Windows access permissions. The permissions
+in the POSIX default ACL are mapped to
+Windows inheritable permissions.
+ Minimal POSIX ACLs consist of three ACL entries
+defining the permissions for the owner, owning
+group, and others. These entries are required.
+Windows ACLs may contain any number of entries
+including zero. If one of the POSIX ACL entries
+contains no permissions and omitting the entry does
+not result in a loss of information, the entry is hidden
+fromWindows clients. If aWindows client sets
+an ACL in which required entries are missing, the
+permissions of that entry are cleared in the corresponding
+POSIX ACL.
+ The mask entry in POSIX ACLs has no correspondence
+in Windows ACLs. If permissions in
+a POSIX ACL are ineffective because they are
+masked and such an ACL is modified via CIFS,
+those masked permissions are removed from the
+ACL.
+ Because Windows ACLs only support the Creator
+Owner and Creator Group pseudo groups for
+inheritable permissions, owner and owning group
+entries in a default ACL are mapped to those
+pseudo groups. For access ACLs, these entries are
+Submitted for publication at the USENIX Annual Technical Conference, San Antonio, Texas, June 2003 11
+mapped to named entries for the current owner and
+the current owning group (e.g., the POSIX ACL entry
+ìu::rwî of a file owned by Joe is treated as
+ìu:joe:rwî).
+If an access ACL contains named ACL entries
+for the owner or owning group (e.g., if one of Joeís
+files also has a ìu:joe:...î entry), the permissions
+defined in such entries are not effective unless
+file ownership changes, so such named entries are
+ignored. When an ACL is set by Samba that contains
+Creator Owner or Creator Group entries, these
+entries are given precedence over named entries for
+the current owner and owning group, respectively.
+ POSIX access ACL and default ACL entries that
+define the same permissions are mapped to a Windows
+ACL entry that is flagged as defining both access
+and inheritable permissions.
+
+
 \subsubsection*{NFS}
+
+The NFS protocol performs client-side caching to improve
+efficiency. In version 2 of the protocol, decisions
+as to who gets read access to locally cached data are performed
+on the client. These decisions are made under
+the assumption that the file mode permissions bits and
+the IDs of the owner and owning group are sufficient to
+do that. This assumption is obviously wrong if an extended
+permission scheme like POSIX ACLs is used on
+the server.
+Because NFSv2 clients perform some access decisions
+locally, they will incorrectly grant read access to
+file and directory contents cached on the client to users
+who are a member in the owning group in two cases.
+First, if the group class permissions include read access,
+but the owning group does not have read access. Second,
+if the owning group does have read access, but a named
+user entry for that user exists that does not allow read
+access. Both situations are rare. Workarounds exist that
+reduce the permissions on the server side so that clients
+only see a safe subset of the real permissions [7, 10]. No
+anomalies exist for users who are not a member in the
+owning group.
+There are two ways to solve this problem. One is to
+extend the access check algorithm used on the client.
+The other is to delegate access decisions to the server
+and possibly cache those decisions for a defined period
+of time on the client. The first solution would probably
+scale better to a high number of readers on the client
+side, as long as the server and all clients can agree on
+the access check algorithms use. Unfortunately, this apapproach
+falls apart as soon as servers implement different
+permission schemes.
+
+% Salut fabs!
+% 
+% J'ai travaillé sur implemntation.tex ajourd'hui :
+% - j'ai corrigé ce que tu as écris à 90% (je n'ai pas réussi à comprendre une partie d'un paragraphe; on verra ensemble)
+% - j'ai rédigé ReiserFS et XFS
+% 
+% - je n'ai pas trouvé HGFS+ ??
+% - Samba et NFS sont trop loooooooongs!
+% (j'ai ajouté le texte en anglais dans le fichier.)
+% J'ai sélectionné le texte pour NFS pour aller à l'essentiel.
