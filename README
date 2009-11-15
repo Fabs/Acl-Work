@@ -18,29 +18,30 @@ Ce fichier contient l'état actuelle de le rapport. Chaque groupe de activité c
 * le Algorithme 
 * Explication sur les ACL masque
 * Heritage
-- Future de les ACL
 
 
 % Les ACL en travaille
 * Noyaux
-- Système de Fichiers (presque)
 * Installation 
 * Ubuntu et Debian
 * Implémentation
-- Implementation Linux
 * Extended Attributtes
 * Linux
+- Système de Fichiers (presque)
 - Mac
+- Implementation Linux
 - Exemple
+
 
 % Implémentation dans le système de Fichiers 
 * ext[2,3]
-- jfs
-- xfs
+* jfs
+* xfs
+* reiser
+- hgfs
 - samba
 - nfs
-- reiser
-- hgfs
+
 
 % Analyses 
 - Performance
