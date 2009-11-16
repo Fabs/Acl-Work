@@ -52,7 +52,7 @@ Quelquefois on a des application qui ne sont pas conscient de les ACL, ça veut 
 
 Quand on parle des ACL minimales ça n'arrive jamais, alors que la relation entre ces ACL e le système traditionnelle é directe. Par contre, dans les ACL étendu ça pose une problème. Pour le solutionner, on va changer le sens da classe groupe. Les propriétaire et les autres seront directement associe avec les classes de même nom, par contre, les entré de groupe et utilisateur nommé avec le groupe propriétaire seront tous associe avec la classe du groupe propriétaire. Par conséquent le sens du classe groupe propriétaire doit être redéfini comme le limite supérieur de les permission de chaque entrée dans les entrée associe a classe du groupe.
 
-Comme dans les ACL étendues on peut avoir des entrées avec plusieurs utilisateurs et/ou groupes nomme, quelques de cette entrées peut-être contenir permissions qui la classe groupe n'aurais pas, alors, on peut avoir une inconsistance dans certain cas. 
+Comme dans les ACL étendues on peut avoir des entrées avec plusieurs utilisateurs et/ou groupes nomme, quelques de cette entrées peut-être contenir permissions qui la classe groupe n'aura pas, alors, on peut avoir une inconsistance dans certain cas. 
 
 Ce question serais résoudre avec l'utilisation de une masque. Comme on peut l'observer dans le figure (\ref{fig:img_acl-mapping}), il y a deux cas:  Les ACL minimales où la classe groupe est référencée pour l'entrée du groupe propriétaire. Les ACL étendues de la classe groupe seront trouvées en faisant un masque avec les permissions du groupe propriétaire et les permissions des utilisateurs et groupe nommés. Cela rend difficile le calcul de classe groupe. 
 
@@ -133,13 +133,15 @@ l'accès est autorisé
  
 \subsection*{Héritage mécanisme}
  
-Le système POSIX règle non seulement les droits d'accès aux objets du système de fichiers, mais aussi le mécanisme d'Héritage. Les ACL sont partagés en deux types, les \emph{access ACL} (qu'on a vu jusqu'à maintenant) et les \emph{default ACL} qui comprennent les règles d'héritage.
+Le système POSIX règle non seulement les droits d'accès aux objets du système de fichiers, mais aussi le mécanisme d'Héritage. Les ACL sont partagés en deux types, les 
+ACL d'accès (qu'on a vu jusqu'à maintenant) et les ACL par défaut qui comprennent les règles d'héritage.
  
-Quand on parle de l'héritage, on parle des droits qui sont attribués aux objets du systèmes de fichiers au moment où ils sont crées. Il y a un seul type d'objet qui peut être associe avec les \emph{default ACL}; les répertoires. Il faut dire que il n'y a pas de sens pour les \emph{default ACL } pour les fichiers car on ne peut pas créer un fichier à l'intérieur d'un fichier. Aussi les \emph{Default ACL} et les \emph{access ACL} sont complètement indépendant.
+Quand on parle de l'héritage, on parle des droits qui sont attribués aux objets du systèmes de fichiers au moment où ils sont crées. Il y a un seul type d'objet qui peut être associe avec les ACL par défaut les répertoires. Il faut dire que il n'y a pas de sens pour les ACL par défaut pour les fichiers car on ne peut pas créer un fichier à l'intérieur d'un fichier. Aussi les ACL par défaut et les 
+ACL d'accès sont complètement indépendant.
  
-Si un répertoire est crée dans une autre, si le première répertoire a \emph{default ACL}, avec le mécanisme d'héritage, le deuxième aura le même ACL que le premier (\emph{default} et \emph{access}). Les objets qui ne sont pas des répertoires, devons hériter les \emph{default ACL} seulement.
+Si un répertoire est crée dans une autre, si le première répertoire a ACL par défaut, avec le mécanisme d'héritage, le deuxième aura le même ACL que le premier (défaut  et accès). Les objets qui ne sont pas des répertoires, devons hériter les ACL par défaut seulement.
  
-Chaque \emph{system call} qui crée les objets du système de fichier a un \emph{mode parameter}. Ce paramètre peut contenir neuf octets de permission pour chaque classe (propriétaire, groupe et les autres). Les permissions de chaque objet créée sont l'intersection des permissions définies pour les \emph{default ACL} et le \emph{mode parameter}.
+Chaque \emph{system call} qui crée les objets du système de fichier a un \emph{mode parameter}. Ce paramètre peut contenir neuf octets de permission pour chaque classe (propriétaire, groupe et les autres). Les permissions de chaque objet créée sont l'intersection des permissions définies pour les ACL par défaut et le \emph{mode parameter}.
  
-Le système traditionnel a une commande pour désigner les modes de permissions par défaut pour les nouveaux fichiers et répertoires: le commande \emph{umask}. Quand il n'y a aucune \emph{default ACL}, la permission effective est déterminé par le \emph{mode parameter} moins les permissions configurés avec \emph{umask}.
+Le système traditionnel a une commande pour désigner les modes de permissions par défaut pour les nouveaux fichiers et répertoires: le commande \emph{umask}. Quand il n'y a aucune ACL par défaut, la permission effective est déterminé par le \emph{mode parameter} moins les permissions configurés avec \emph{umask}.
  

@@ -82,7 +82,8 @@ Aussi on a le commande \emph{setfacl} pour modifier, ou ajouter les permission A
 setfacl -m u:fabsn:r-x repertoire
 \end{verbatim}
 
-\subsection*{Exemple \emph{access ACL}}
+\subsection*{Exemple 
+ACL d'accès}
 
 Voici une exemple d'utilisation trouvable dans le article d'Andreas Gruembacher\cite{aclsuse}.
 
@@ -160,12 +161,14 @@ mask::rwx
 other::---
 \end{verbatim}
 
-Cette exemple montre que les changes avec le commande \emph{chmeod} ne sont pas destructives. Les opérations sont complètement réversibles et les permission avant et après les deux opération d'aller et retour sont les mêmes, une caractéristique très important de les ACL POSIX. 
+Cette exemple montre que les changes avec le commande \emph{chmod} ne sont pas destructives. Les opérations sont complètement réversibles et les permission avant et après les deux opération d'aller et retour sont les mêmes, une caractéristique très important de les ACL POSIX. 
 
-\subsection*{Exemple \emph{default ACL}}
+\subsection*{Exemple des ACL par défaut}
+
+Avec le modifier -d, on peut ajouter les ACL par défaut d'un répertoire. 
 
 \begin{verbatim}
-$ setfacl -d -m group:group:r-x repertoire 
+$ setfacl -d -m group:admin:r-x repertoire 
 $ getfacl --omit-header repertoire 
 user::rwx
 user:jean:rwx
@@ -174,12 +177,15 @@ mask::rwx
 other::---
 default:user::rwx
 default:group::r-x
-default:group:toolies:r-x
+default:group:admin:r-x
 default:mask::r-x
 default:other::---
 \end{verbatim} 
-% Following the access ACL, the default ACL is printed with each entry prefixed with “default:”. This out- put format is an extension to POSIX.1e that is found on Solaris and Linux. A strict implementation of POSIX 1003.2c would only show the access ACL. The default ACL would be shown with the -d option to getfacl.
-% We have only specified an ACL entry for the toolies group in the setfacl command. The other entries required for a complete ACL have automatically been copied from the access ACL to the default ACL. This is a Linux- specific extension; on other systems all entries may need to be specified explicitly.
+
+Les ACL par défaut vient après les ACL d'accès et sont préfixe pour le chaîne de caractères "default::". Le courent ce que quand on ajoute une nouvelle règle seulement dans les ACL d'accès comme on a faire pour le groupe \emph{admin} aucune chose change avec les ACL par défaut. Par contre, il y a une extension sur linux que ajoute de manière automatique le règle dans les ACL par défaut. 
+
+Il faut voir que il n y a pas aucun entrée pour jean dans les défaut ACL, alors, jean n'aura pas ácces 
+
 % The default ACL contains no entry for Joe, so Joe will not have access (except possibly through group member- ship or the other class permissions).
 % A subdirectory inherits ACLs as shown next. Unless otherwise specified, the mkdir command uses a value of 0777 as the mode parameter to the mkdir system call, which it uses for creating the new directory. Observe that both the access and the default ACL contain the same entries.
 % $ mkdir dir/subdir $ getfacl --omit-header dir/subdir user::rwx group::r-x group:toolies:r-x mask::r-x other::--- default:user::rwx default:group::r-x default:group:toolies:r-x default:mask::r-x default:other::---
@@ -189,9 +195,6 @@ default:other::---
 % Conference, San Antonio, Texas, June 2003	5
 % No permissions have been removed from ACL entries in the group class; instead they are merely masked and thus made ineffective. This ensures that traditional tools like compilers will interact well with ACLs. They can create files with restricted permissions and mark the files executable later. The mask mechanism will cause the right users and groups to end up with the expected per- missions.
 % 
-
-
-
 
 
 % # file: repertoire/
