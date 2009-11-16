@@ -150,7 +150,8 @@ Si une ACL entrée contient permission désactivé pour le masque, getfacl doit 
 
 \begin{verbatim}
 $ chmod g+w repertoire 
-$ ls -dl dir drwxrwx---+ ... user group ... repertoire 
+$ ls -dl repertoire 
+	drwxrwx---+ ... user group ... repertoire 
 $ getfacl --omit-header repertoir 
 user::rwx 
 user:jean:rwx 
@@ -161,13 +162,10 @@ other::---
 
 Cette exemple montre que les changes avec le commande \emph{chmeod} ne sont pas destructives. Les opérations sont complètement réversibles et les permission avant et après les deux opération d'aller et retour sont les mêmes, une caractéristique très important de les ACL POSIX. 
 
-
 \subsection*{Exemple \emph{default ACL}}
 
-%Default acl
-
 \begin{verbatim}
-$ setfacl -d -m group:group:r-x dir 
+$ setfacl -d -m group:group:r-x repertoire 
 $ getfacl --omit-header repertoire 
 user::rwx
 user:jean:rwx
@@ -189,8 +187,6 @@ default:other::---
 % All permissions not included in the mode parameter are removed from the corresponding ACL entries. The same has happened in the previous example, but there was no noticeable effect because the value 0777 used for the mode parameter represents a full set of permissions.
 % Submitted for publication at the USENIX Annual Technical
 % Conference, San Antonio, Texas, June 2003	5
-% #effective:r-x
-% $ touch dir/file $ ls -l dir/file -rw-r-----+ ... agruen suse ... dir/file $ getfacl --omit-header dir/file user::rw- group::r-x group:toolies:r-x mask::r-- other::---
 % No permissions have been removed from ACL entries in the group class; instead they are merely masked and thus made ineffective. This ensures that traditional tools like compilers will interact well with ACLs. They can create files with restricted permissions and mark the files executable later. The mask mechanism will cause the right users and groups to end up with the expected per- missions.
 % 
 
