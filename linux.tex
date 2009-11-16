@@ -109,29 +109,77 @@ other::---
 
 Le trois première ligne après le commande (démarrer pour le \#) nous donne les information sur les propriétaire (groupe e utilisateur) et le nom du fichier. Après chaque ligne vient la liste des ACL. Ce exemple montre une ACL minimale. Si par exemple on ajoute permissions pour le utilisateur "jean" avec le commande \emph{setfacl} on va avoir les ACL étendu.
 
-\begin{verbatin}
+\begin{verbatim}
 $ setfacl -m user:jean:rwx repertoire
-$ getfacl --omit-header repertoire user::rwx user:joe:rwx	
-	group::r-x mask::rwx other::---
-\end{verbatin}
+$ getfacl --omit-header repertoire 
+	user::rwx 
+	user:jean:rwx	
+	group::r-x 
+	mask::rwx 
+	other::---
+\end{verbatim}
 
 Il faut rappeler que le command \emph{setfacl} a été employer avec le modificateur \emph{-m (modify)}. Pour regarder les résultat on utilisé une autre fois le \emph{getfacl}. Il faut savoir que le modificateur \emph{--omit-header} cache les première 3 ligne avec les information sur les propriétaires.  
 
 Tout d'abord on peut voir que l'entrée masque a été ajouter avec l'entrée d'utilisateur jean. Ces permission sont crée comme la union entré les permission de jean et du groupe propriétaire. La masque doit être une valeur que ne masque aucune permission, alors, ce valeur se trouve comme l'union de les élément que définissions la classe groupe.  
 
-\begin{verbatin}
+\begin{verbatim}
 ls -dl repertoire
 	drwxrwx---+ ... user group ... repertoire
-\end{verbatin}
+\end{verbatim}
+
+Si on rappel le dernière exemple, le groupe propriétaire n'y a pas le droit de écriture (\emph{group::r-x}), par contre, les groupe classe vient avec ce droit. C'est pour ça que quand on calcule effectivement le droit pour le groupe propriétaire dans le modèle acl, ce droit est toujours le union avec la masque.
+
+Le prochaine exemple montre comme lest ACL sont modifiée pour l'emploie du command \emph{chmod} ou \emph{setfacl}. On va effacer le permission de écrit de la classe groupe. On doit voir que si il n'y a pas de masque, le command doit changer directement les permission dé l'entrée ACL du groupe propriétaire. 
 
 
-% The permissions of the group class permissions in- clude write access. Traditionally such file permission bits would indicate write access for the owning group. With ACLs, the effective permissions of the owning group are defined as the intersection of the permissions of the owning group and mask entries. The effective per- missions of the owning group in the example are still r-x, the same permissions as before creating additional ACL entries with setfacl.
-% The group class permissions can be modified using the setfacl or chmod command. If no mask entry exists, chmod modifies the permissions of the owning group en- try as it does traditionally. The next example removes write access from the group class and checks what hap- pens.
-% 
-% 
-% In the following example, we add a default ACL to the directory. Then we check what getfacl shows.
-% $ setfacl -d -m group:toolies:r-x dir $ getfacl --omit-header dir user::rwx user:joe:rwx
-% group::r-x mask::rwx other::--- default:user::rwx default:group::r-x default:group:toolies:r-x default:mask::r-x default:other::---
+\begin{verbatim}
+$ chmod g-w repertoire 
+$ ls -dl repertoire 
+	drwxr-x---+ ... user group ... repertoire 
+$ getfacl --omit-header repertoire 
+user::rwx 
+user:jean:rwx 	#effective:r-x
+group::r-x 	
+mask::r-x 
+other::---
+
+\end{verbatim}
+
+Si une ACL entrée contient permission désactivé pour le masque, getfacl doit ajouter une commentaire qui montre ça différence. Il faut voir aussi qu'est-ce que se passe quand on rajoute le permission. 
+
+\begin{verbatim}
+$ chmod g+w repertoire 
+$ ls -dl dir drwxrwx---+ ... user group ... repertoire 
+$ getfacl --omit-header repertoir 
+user::rwx 
+user:jean:rwx 
+group::r-x
+mask::rwx
+other::---
+\end{verbatim}
+
+After adding the write permission to the group class, the ACL defines the same permissions as before taking the permission away. The chmod command has a nonde- structive effect on the access permissions. This preserva- tion of permissions is an important feature of POSIX.1e ACLs.
+
+
+
+
+%Default acl
+
+\begin{verbatim}
+$ setfacl -d -m group:group:r-x dir 
+$ getfacl --omit-header repertoire 
+user::rwx
+user:jean:rwx
+group::r-x 
+mask::rwx
+other::---
+default:user::rwx
+default:group::r-x
+default:group:toolies:r-x
+default:mask::r-x
+default:other::---
+\end{verbatim} 
 % Following the access ACL, the default ACL is printed with each entry prefixed with “default:”. This out- put format is an extension to POSIX.1e that is found on Solaris and Linux. A strict implementation of POSIX 1003.2c would only show the access ACL. The default ACL would be shown with the -d option to getfacl.
 % We have only specified an ACL entry for the toolies group in the setfacl command. The other entries required for a complete ACL have automatically been copied from the access ACL to the default ACL. This is a Linux- specific extension; on other systems all entries may need to be specified explicitly.
 % The default ACL contains no entry for Joe, so Joe will not have access (except possibly through group member- ship or the other class permissions).
