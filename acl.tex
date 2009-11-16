@@ -45,20 +45,16 @@ Autres & other::rwx \\
 \end{center}
  
 Les règles sont formées par un indicateur de classe (comme les classes du système traditionnel), l'identificateur pour préciser de quel utilisateur ou groupe on parle puis les octets de permissions.
- 
-%REFAIRE -----------------------------------------------------------------------------------
-Avec cette représentation le sens de la classe du groupe a été redéfini comme le limite supérieur de les permission de chaque entrée dans la classe du groupe. C'était a dire que les entrée du groupe et du utilisateur nommées seront désigner à entrée du groupe. Aussi, c'est importante rappeler que cette choix permettre se prémunir contre les application qui ne sont pas conscient de les ACL.
-\footnote{Fabricio: Je ne comprend pas bien cette affirmation, je laisse ici le teste orignial:
-These named group and named user entries are assigned to the group class, which already contains the owning group entry. Different from the POSIX.1 permission model, the group class may now contain ACL entries with different permission sets, so the group class permissions alone are no longer sufficient to represent all the detailed permissions of all ACL entries it contains. Therefore, the meaning of the group class permissions is redefined: under their new semantics, they represent an upper bound of the permissions that any entry in the group class will grant. This upper bound property ensures that POSIX.1 applications that are unaware of ACLs will not suddenly and unexpectedly start to grant additional permissions once ACLs are supported.}.
- 
-Les ACL équivalentes au mode simple de permissions s'appellent les ACL minimales. Si les ACL possèdent des entrées supplémentaires, ont les appelle ACL étendues. Toutes les ACL étendues doivent avoir une entrée masque et peuvent contenir théoriquement autant d'entrées que l'on désire. On verra après que ce numéro d'entrée peut-être limitée pour chaque implémentation et qu'il est aussi important pour les performances.
- 
-%EXPLIQUER MIEUX
-Dans les ACL étendues on peut avoir des entrées avec plusieurs utilisateurs et/ou groupes, quelques de cette entrées peut-être contenir permissions qui la classe groupe n'aurais pas, alors, on peut avoir une inconsistance basée en le cas qui les permissions du groupe propriétaire sont diffèrent de les permission de la classe groupe.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
- 
-On peut résoudre ce problème avec un masque. Comme on peut l'observer dans le figure (\ref{fig:img_acl-mapping}), il y a deux cas:  Les ACL minimales où la classe groupe est référencée pour l'entrée du groupe propriétaire. Les ACL étendues de la classe groupe seront trouvées en faisant un masque avec les permissions du groupe propriétaire et les permissions des utilisateurs nommés mais si l'entrée de permission du groupe propriétaire possède des droits supérieurs au masque ils seront conservés. Cela rend difficile le calcul de classe groupe. 
+Les ACL équivalentes au mode simple de permissions s'appellent les ACL minimales. Une ACL minimale possède 3 entrée (propriétaire, groupe propriétaire et autres) qui sont trivialement convertible. Si les ACL possèdent des entrées supplémentaires, ont les appelle ACL étendues. Toutes les ACL étendues doivent avoir une entrée masque et peuvent contenir théoriquement autant d'entrées que l'on désire. On verra après que ce numéro d'entrée peut-être limitée pour chaque implémentation et qu'il est aussi important pour les performances.
+
+Quelquefois on a des application qui ne sont pas conscient de les ACL, ça veut dire qu'on doit crée une relation entre les ACL e le système traditionnelle de façon que ces application n'irons commencer a donner tout a coup et de façon inattendue plusieurs droits aux utilisateurs ou groupes. 
+
+Quand on parle des ACL minimales ça n'arrive jamais, alors que la relation entre ces ACL e le système traditionnelle é directe. Par contre, dans les ACL étendu ça pose une problème. Pour le solutionner, on va changer le sens da classe groupe. Les propriétaire et les autres seront directement associe avec les classes de même nom, par contre, les entré de groupe et utilisateur nommé avec le groupe propriétaire seront tous associe avec la classe du groupe propriétaire. Par conséquent le sens du classe groupe propriétaire doit être redéfini comme le limite supérieur de les permission de chaque entrée dans les entrée associe a classe du groupe.
+
+Comme dans les ACL étendues on peut avoir des entrées avec plusieurs utilisateurs et/ou groupes nomme, quelques de cette entrées peut-être contenir permissions qui la classe groupe n'aurais pas, alors, on peut avoir une inconsistance dans certain cas. 
+
+Ce question serais résoudre avec l'utilisation de une masque. Comme on peut l'observer dans le figure (\ref{fig:img_acl-mapping}), il y a deux cas:  Les ACL minimales où la classe groupe est référencée pour l'entrée du groupe propriétaire. Les ACL étendues de la classe groupe seront trouvées en faisant un masque avec les permissions du groupe propriétaire et les permissions des utilisateurs et groupe nommés. Cela rend difficile le calcul de classe groupe. 
 
 \begin{figure}[htbp]
 \centering
@@ -144,3 +140,43 @@ Chaque \emph{system call} qui crée les objets du système de fichier a un \emph
  
 Le système traditionnel a une commande pour désigner les modes de permissions par défaut pour les nouveaux fichiers et répertoires: le commande \emph{umask}. Quand il n'y a aucune \emph{default ACL}, la permission effective est déterminé par le \emph{mode parameter} moins les permissions configurés avec \emph{umask}.
  
+
+% # file: repertoire/
+% # owner: root
+% # group: root
+% user::rwx
+% user:daemon:rwx			#effective:r--
+% user:bin:rwx			#effective:r--
+% user:sys:rwx			#effective:r--
+% user:sync:rwx			#effective:r--
+% user:man:rwx			#effective:r--
+% user:uucp:rwx			#effective:r--
+% user:proxy:rwx			#effective:r--
+% user:list:rwx			#effective:r--
+% user:irc:rwx			#effective:r--
+% user:gnats:rwx			#effective:r--
+% user:syslog:rwx			#effective:r--
+% user:klog:rwx			#effective:r--
+% user:gdm:rwx			#effective:r--
+% user:saned:rwx			#effective:r--
+% user:pulse:rwx			#effective:r--
+% user:avahi:rwx			#effective:r--
+% user:sshd:rwx			#effective:r--
+% user:fabsn:rwx			#effective:r--
+% user:nobody:rwx			#effective:r--
+% group::r-x			#effective:r--
+% group:list:rwx			#effective:r--
+% group:irc:rwx			#effective:r--
+% group:src:rwx			#effective:r--
+% group:shadow:rwx		#effective:r--
+% group:utmp:rwx			#effective:r--
+% group:video:rwx			#effective:r--
+% group:lpadmin:rwx		#effective:r--
+% group:crontab:rwx		#effective:r--
+% group:pulse:rwx			#effective:r--
+% group:avahi:rwx			#effective:r--
+% group:haldaemon:rwx		#effective:r--
+% group:admin:rwx			#effective:r--
+% group:fabsn:rwx			#effective:r--
+% mask::r--
+
