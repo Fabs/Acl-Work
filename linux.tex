@@ -95,11 +95,20 @@ $ ls -dl repertoire
 	drwxr-x--- ... user groupe ... repertoire
 \end{verbatim}
 
-La lettre 'd' montre que on l'objet 'repertoire' c'est une répertoire, le octet de permission "drwxr-x---" Les réticences dans le command supprime les information avec aucune pertinence pour cette exemple. 
+La lettre "d" montre que on l'objet "répertoire" c'est une répertoire suivi pour les octet de permission "rwxr-x---". Les réticences dans le command supprime les information avec aucune pertinence pour cette exemple. Cette permission basic on toujours une représentation dans les ACL, pour les afficher on faire:
 
-% These base permissions have an equivalent represen- tation as an ACL. ACLs are displayed using the getfacl command.
-% $ getfacl dir # file: dir # owner: agruen # group: suse user::rwx
-% group::r-x other::---
+\begin{verbatim}
+$ getfacl repertoire
+# file: repertoire 
+# owner: user 
+# group: goupe 
+user::rwx
+group::r-x
+other::---
+\end{verbatim}
+
+Le trois première ligne après le commande (démarrer pour le \#) nous donne les information sur les propriétaire (groupe e utilisateur) et le nom du fichier. Après chaque ligne vient la liste des ACL. Ce exemple la ce de une ACL 
+
 % The first three lines of output contain the file name, owner, and owning group of the file as comments. Each of the following lines contains an ACL entry for one of the three classes of users: owner, group, and other.
 % The next example grants read, write, and execute access to user Joe in addition to the existing permis- sions. For that, the -m (modify) argument of setfacl is used. The resulting ACL is again shown using the get- facl command. The –omit-header option to getfacl sup- presses the three-line comment header containing the file name, owner, and owning group to shorten the examples shown.
 % $ setfacl -m user:joe:rwx dir $ getfacl --omit-header dir user::rwx user:joe:rwx
