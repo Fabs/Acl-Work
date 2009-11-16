@@ -92,7 +92,7 @@ On parte de la création de un répertoire avec l'application de umask de valeur
 $ umask 027 
 $ mkdir dir 
 $ ls -dl repertoire
-	drwxr-x--- ... user groupe ... repertoire
+	drwxr-x--- ... user group ... repertoire
 \end{verbatim}
 
 La lettre "d" montre que on l'objet "répertoire" c'est une répertoire suivi pour les octet de permission "rwxr-x---". Les réticences dans le command supprime les information avec aucune pertinence pour cette exemple. Cette permission basic on toujours une représentation dans les ACL, pour les afficher on faire:
@@ -101,22 +101,30 @@ La lettre "d" montre que on l'objet "répertoire" c'est une répertoire suivi po
 $ getfacl repertoire
 # file: repertoire 
 # owner: user 
-# group: goupe 
+# group: goup
 user::rwx
 group::r-x
 other::---
 \end{verbatim}
 
-Le trois première ligne après le commande (démarrer pour le \#) nous donne les information sur les propriétaire (groupe e utilisateur) et le nom du fichier. Après chaque ligne vient la liste des ACL. Ce exemple la ce de une ACL 
+Le trois première ligne après le commande (démarrer pour le \#) nous donne les information sur les propriétaire (groupe e utilisateur) et le nom du fichier. Après chaque ligne vient la liste des ACL. Ce exemple montre une ACL minimale. Si par exemple on ajoute permissions pour le utilisateur "jean" avec le commande \emph{setfacl} on va avoir les ACL étendu.
 
-% The first three lines of output contain the file name, owner, and owning group of the file as comments. Each of the following lines contains an ACL entry for one of the three classes of users: owner, group, and other.
-% The next example grants read, write, and execute access to user Joe in addition to the existing permis- sions. For that, the -m (modify) argument of setfacl is used. The resulting ACL is again shown using the get- facl command. The –omit-header option to getfacl sup- presses the three-line comment header containing the file name, owner, and owning group to shorten the examples shown.
-% $ setfacl -m user:joe:rwx dir $ getfacl --omit-header dir user::rwx user:joe:rwx
-% group::r-x mask::rwx other::---
-% Two additional entries have been added to the ACL: one is for user Joe and the other is the mask entry. The mask entry is automatically created when needed but not provided. Its permissions are set to the union of the per- missions of all entries that are in the group class, so the mask entry does not mask any permissions.
-% The mask entry now maps to the group class permis- sions. The output of ls changes as shown next.
-% $ ls -dl dir drwxrwx---+ ... agruen suse ... dir
-% An additional “+” character is displayed after the per- missions of all files that have extended ACLs. This seems like an odd change, but in fact POSIX.1 allocates this character position to the optional alternate access method flag, which happens to default to a space charac- ter if no alternate access methods are in use.
+\begin{verbatin}
+$ setfacl -m user:jean:rwx repertoire
+$ getfacl --omit-header repertoire user::rwx user:joe:rwx	
+	group::r-x mask::rwx other::---
+\end{verbatin}
+
+Il faut rappeler que le command \emph{setfacl} a été employer avec le modificateur \emph{-m (modify)}. Pour regarder les résultat on utilisé une autre fois le \emph{getfacl}. Il faut savoir que le modificateur \emph{--omit-header} cache les première 3 ligne avec les information sur les propriétaires.  
+
+Tout d'abord on peut voir que l'entrée masque a été ajouter avec l'entrée d'utilisateur jean. Ces permission sont crée comme la union entré les permission de jean et du groupe propriétaire. La masque doit être une valeur que ne masque aucune permission, alors, ce valeur se trouve comme l'union de les élément que définissions la classe groupe.  
+
+\begin{verbatin}
+ls -dl repertoire
+	drwxrwx---+ ... user group ... repertoire
+\end{verbatin}
+
+
 % The permissions of the group class permissions in- clude write access. Traditionally such file permission bits would indicate write access for the owning group. With ACLs, the effective permissions of the owning group are defined as the intersection of the permissions of the owning group and mask entries. The effective per- missions of the owning group in the example are still r-x, the same permissions as before creating additional ACL entries with setfacl.
 % The group class permissions can be modified using the setfacl or chmod command. If no mask entry exists, chmod modifies the permissions of the owning group en- try as it does traditionally. The next example removes write access from the group class and checks what hap- pens.
 % 
