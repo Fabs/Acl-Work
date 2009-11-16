@@ -82,7 +82,7 @@ Aussi on a le commande \emph{setfacl} pour modifier, ou ajouter les permission A
 setfacl -m u:fabsn:r-x repertoire
 \end{verbatim}
 
-\subsection*{Exemple}
+\subsection*{Exemple \emph{access ACL}}
 
 Voici une exemple d'utilisation trouvable dans le article d'Andreas Gruembacher\cite{aclsuse}.
 
@@ -159,10 +159,10 @@ mask::rwx
 other::---
 \end{verbatim}
 
-After adding the write permission to the group class, the ACL defines the same permissions as before taking the permission away. The chmod command has a nonde- structive effect on the access permissions. This preserva- tion of permissions is an important feature of POSIX.1e ACLs.
+Cette exemple montre que les changes avec le commande \emph{chmeod} ne sont pas destructives. Les opérations sont complètement réversibles et les permission avant et après les deux opération d'aller et retour sont les mêmes, une caractéristique très important de les ACL POSIX. 
 
 
-
+\subsection*{Exemple \emph{default ACL}}
 
 %Default acl
 
