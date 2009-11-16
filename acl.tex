@@ -66,7 +66,7 @@ Ce question serais résoudre avec l'utilisation de une masque. Comme on peut l'o
  
 Pour assurer le cohérance, quand une application change les permissions (par exemple le commande \emph{chmod}) les ACL sont modifiée de façon a reproduire cette modification.
  
-On a dit que la permission de la classe groupe est calculée comme la limite supérieure de tous les entrées dans le classe group. Avec les ACLs minimaux cette computation est simple, par contre, avec les ACLs étendu, on a besoin de masquer les permissions. Comme l'exemple de le tableau (\ref{tab:masquee}), les entrées de permission qui sont partie de la classe de groupe et qui aussi sont présente dans l'entrée masque sont applique effectivement. Si une permission était absent dans le masque, c'est a dire que aucun entrée de group (qui non le groupe du propriétaire) peut avoir ce permission, on dit dans ce cas qui la entrée est masquée.
+On a dit que la permission de la classe groupe est calculée comme la limite supérieure de tous les entrées dans le classe group. Avec les ACLs minimaux cette computation est simple, par contre, avec les ACLs étendu, on a besoin de masquer les permissions. Comme l'exemple de le tableau (\ref{tab:masquee}), les entrées de permission qui sont partie de la classe de groupe et qui aussi sont présente dans l'entrée masque sont applique effectivement. Si une permission était absent dans le masque, c'est a dire que aucun entrée de groupe (qui non le groupe du propriétaire) peut avoir ce permission, on dit dans ce cas qui la entrée est masquée.
  
 \begin{center}
 \begin{tabular}{|l|l|l|}
