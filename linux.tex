@@ -82,8 +82,7 @@ Aussi on a le commande \emph{setfacl} pour modifier, ou ajouter les permission A
 setfacl -m u:fabsn:r-x repertoire
 \end{verbatim}
 
-\subsection*{Exemple 
-ACL d'accès}
+\subsection*{Exemple ACL d'accès}
 
 Voici une exemple d'utilisation trouvable dans le article d'Andreas Gruembacher\cite{aclsuse}.
 
@@ -184,54 +183,27 @@ default:other::---
 
 Les ACL par défaut vient après les ACL d'accès et sont préfixe pour le chaîne de caractères "default::". Le courent ce que quand on ajoute une nouvelle règle seulement dans les ACL d'accès comme on a faire pour le groupe \emph{admin} aucune chose change avec les ACL par défaut. Par contre, il y a une extension sur linux que ajoute de manière automatique le règle dans les ACL par défaut. 
 
-Il faut voir que il n y a pas aucun entrée pour jean dans les défaut ACL, alors, jean n'aura pas ácces 
+Il faut voir que il n y a pas aucun entrée pour jean dans les défaut ACL, alors, jean n'aura pas accès dans le nouvelle objet crée dans le répertoire (sauf si il est membre de un groupe qui a les permission). 
 
-% The default ACL contains no entry for Joe, so Joe will not have access (except possibly through group member- ship or the other class permissions).
-% A subdirectory inherits ACLs as shown next. Unless otherwise specified, the mkdir command uses a value of 0777 as the mode parameter to the mkdir system call, which it uses for creating the new directory. Observe that both the access and the default ACL contain the same entries.
-% $ mkdir dir/subdir $ getfacl --omit-header dir/subdir user::rwx group::r-x group:toolies:r-x mask::r-x other::--- default:user::rwx default:group::r-x default:group:toolies:r-x default:mask::r-x default:other::---
-% Files created inside dir inherit their permissions as shown next. The touch command passes a mode value of 0666 to the kernel for creating the file.
-% All permissions not included in the mode parameter are removed from the corresponding ACL entries. The same has happened in the previous example, but there was no noticeable effect because the value 0777 used for the mode parameter represents a full set of permissions.
-% Submitted for publication at the USENIX Annual Technical
-% Conference, San Antonio, Texas, June 2003	5
-% No permissions have been removed from ACL entries in the group class; instead they are merely masked and thus made ineffective. This ensures that traditional tools like compilers will interact well with ACLs. They can create files with restricted permissions and mark the files executable later. The mask mechanism will cause the right users and groups to end up with the expected per- missions.
-% 
+D'accord avec le mécanisme d'héritage qu'on a vu dans le page \ref{sec:heritage}, le sub-repertoire doit hériter les ACL de sont parent. Par défaut, le command \emph{mkdir} utilise une \emph{mode parameter} de 0777 pour ce appel de système. Observez:
+
+\begin{verbatim}
+$ mkdir repertoire/subrep 
+$ getfacl --omit-header repertoire/subrep 
+user::rwx 
+group::r-x 
+group:admin:r-x 
+mask::r-x 
+other::--- 
+default:user::rwx 
+default:group::r-x 
+default:group:toolies:r-x 
+default:mask::r-x 
+default:other::---
+\end{verbatim}
+
+Pour les fichiers ç'arrive aussi. Le commande \emph{touch} utilise le \emph{mode value} 0666. Tous les permission que ne sont pas présent dans le \emph{mode parameter} sont écraser.
+
+Enfin, aucune permission a été écraser dans le groupe classe, cependant, la masque a été appliqué. Ce politique s'assure que par exemple les application comme les compilateurs peuvent marcher bien avec les ACL, alors que même que ils ne supportent ce mécanisme, il peuvent créer les fichier avec les permission restreint et après les donner les permission d'exécution et quand même, les groupes et autres permission doivent marcher comme attendu. 
 
 
-% # file: repertoire/
-% # owner: root
-% # group: root
-% user::rwx
-% user:daemon:rwx			#effective:r--
-% user:bin:rwx			#effective:r--
-% user:sys:rwx			#effective:r--
-% user:sync:rwx			#effective:r--
-% user:man:rwx			#effective:r--
-% user:uucp:rwx			#effective:r--
-% user:proxy:rwx			#effective:r--
-% user:list:rwx			#effective:r--
-% user:irc:rwx			#effective:r--
-% user:gnats:rwx			#effective:r--
-% user:syslog:rwx			#effective:r--
-% user:klog:rwx			#effective:r--
-% user:gdm:rwx			#effective:r--
-% user:saned:rwx			#effective:r--
-% user:pulse:rwx			#effective:r--
-% user:avahi:rwx			#effective:r--
-% user:sshd:rwx			#effective:r--
-% user:fabsn:rwx			#effective:r--
-% user:nobody:rwx			#effective:r--
-% group::r-x			#effective:r--
-% group:list:rwx			#effective:r--
-% group:irc:rwx			#effective:r--
-% group:src:rwx			#effective:r--
-% group:shadow:rwx		#effective:r--
-% group:utmp:rwx			#effective:r--
-% group:video:rwx			#effective:r--
-% group:lpadmin:rwx		#effective:r--
-% group:crontab:rwx		#effective:r--
-% group:pulse:rwx			#effective:r--
-% group:avahi:rwx			#effective:r--
-% group:haldaemon:rwx		#effective:r--
-% group:admin:rwx			#effective:r--
-% group:fabsn:rwx			#effective:r--
-% mask::r--
