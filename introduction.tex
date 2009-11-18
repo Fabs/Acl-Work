@@ -1,9 +1,0 @@
-\section*{Introduction}
-%Problème et solution plus simple
-Quand on désire contrôler l'accès aux données dans un système de fichiers, il y a plusieurs moyens d’y parvenir. Par défaut, les systèmes POSIX (Portable Operation System Interface)\cite{ieee1,ieee2} ont un mécanisme qui permet d’associer chaque entité avec un ensemble de règles, lequel est composé par une séquence d'octet qui exprime les droits du propriétaire, de son groupe et des autres utilisateurs.
-
-%Les limitations de cette solution
-Ce mode, traditionnel, assez simple est capable de résoudre les problèmes les plus fréquents. Par contre, il pose des limitations aux administrateurs de systèmes qui pour exprimer leurs besoins doivent employer des configurations non évidentes. Certaines applications choisissent de développer leur propre système de droit comme le serveur FTP Proftp\cite{ftp} pour résoudre ce problèmes de droits.
-
-% La solution ACL
-Pour remédier à ces limitations, les systèmes UNIX peuvent employer les ACL. Cet article présente une exposition sur les ACL POSIX, ses modes de fonctionnement, ses qualités et désavantages. Le texte s’inspire de l'article d’Andreas Gruembacher\cite{aclsuse} qui a fait partit de l’équipe ayant ajouté le support aux ACL dans le noyaux Linux pour les systèmes de fichiers ext2 et ext3, qui sont les plus utilisés dans les monde UNIX.
