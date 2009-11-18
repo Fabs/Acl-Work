@@ -14,3 +14,6 @@ clean:
 
 count:
 	cat rapport.tex | grep -v "%" | grep -v '\\' | wc 
+
+ilfaut:
+	grep -H -n "@@" *.tex

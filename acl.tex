@@ -54,6 +54,8 @@ Quand on parle des ACL minimales ça n'arrive jamais, alors que la relation entr
 
 Comme dans les ACL étendues on peut avoir des entrées avec plusieurs utilisateurs et/ou groupes nomme, quelques de cette entrées peut-être contenir permissions qui la classe groupe n'aura pas, alors, on peut avoir une inconsistance dans certain cas. 
 
+%@@
+
 Ce question serais résoudre avec l'utilisation de une masque. Comme on peut l'observer dans le figure (\ref{fig:img_acl-mapping}), il y a deux cas:  Les ACL minimales où la classe groupe est référencée pour l'entrée du groupe propriétaire. Les ACL étendues de la classe groupe seront trouvées en faisant un masque avec les permissions du groupe propriétaire et les permissions des utilisateurs et groupe nommés. Cela rend difficile le calcul de classe groupe. 
 
 \begin{figure}[htbp]
@@ -146,3 +148,4 @@ Chaque \emph{system call} qui crée les objets du système de fichier a un \emph
  
 Le système traditionnel a une commande pour désigner les modes de permissions par défaut pour les nouveaux fichiers et répertoires: le commande \emph{umask}. Quand il n'y a aucune ACL par défaut, la permission effective est déterminé par le \emph{mode parameter} moins les permissions configurés avec \emph{umask}.
  
+%@@
