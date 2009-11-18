@@ -19,7 +19,7 @@
 
 \maketitle
 \newpage
-%----------------------------------------------------------------------------
+
 \section*{Introduction}
 %Problème et solution plus simple
 Quand on désire contrôler l'accès aux données dans un système de fichiers, il y a plusieurs moyens d’y parvenir. Par défaut, les systèmes POSIX (Portable Operation System Interface)\cite{ieee1,ieee2} ont un mécanisme qui permet d’associer chaque entité avec un ensemble de règles, lequel est composé par une séquence d'octet qui exprime les droits du propriétaire, de son groupe et des autres utilisateurs.
@@ -77,17 +77,16 @@ Autres & other::rwx \\
  
 Les règles sont formées par un indicateur de classe (comme les classes du système traditionnel), l'identificateur pour préciser de quel utilisateur ou groupe on parle puis les octets de permissions.
 
-Les ACL équivalentes au mode simple de permissions s'appellent les ACL minimales. Une ACL minimale possède 3 entrée (propriétaire, groupe propriétaire et autres) qui sont trivialement convertible. Si les ACL possèdent des entrées supplémentaires, ont les appelle ACL étendues. Toutes les ACL étendues doivent avoir une entrée masque et peuvent contenir théoriquement autant d'entrées que l'on désire. On verra après que ce numéro d'entrée peut-être limitée pour chaque implémentation et qu'il est aussi important pour les performances.
+Les ACL équivalentes au mode simple de permissions s'appellent les ACL minimales. Une ACL minimale possède 3 entrée (propriétaire, groupe propriétaire et autres) qu'on peut convertir directement. Si les ACL possèdent des entrées supplémentaires, ont les appelle ACL étendues. Toutes les ACL étendues doivent avoir une entrée masque et peuvent contenir théoriquement autant d'entrées que l'on désire. Ce numéro d'entrée peut-être limitée pour chaque implémentation et qu'il est aussi important pour les performances.
 
-Quelquefois on a des application qui ne sont pas conscient de les ACL, ça veut dire qu'on doit crée une relation entre les ACL e le système traditionnelle de façon que ces application n'irons commencer a donner tout a coup et de façon inattendue plusieurs droits aux utilisateurs ou groupes. 
+Quelquefois on a des application qui ne sont pas programmer pour fonctionner avec les ACL, cela veut dire que l'on doit créer une relation pour convertir les ACL vers le système traditionnel, de façon que ces application ne donnerons pas de façon inattendue plusieurs droits aux utilisateurs ou groupes. 
 
-Quand on parle des ACL minimales ça n'arrive jamais, alors que la relation entre ces ACL e le système traditionnelle é directe. Par contre, dans les ACL étendu ça pose une problème. Pour le solutionner, on va changer le sens da classe groupe. Les propriétaire et les autres seront directement associe avec les classes de même nom, par contre, les entré de groupe et utilisateur nommé avec le groupe propriétaire seront tous associe avec la classe du groupe propriétaire. Par conséquent le sens du classe groupe propriétaire doit être redéfini comme le limite supérieur de les permission de chaque entrée dans les entrée associe a classe du groupe.
+Quand le programme utilise des ACL minimales ce problème n'arrive jamais: la relation entre ces ACL et le système traditionnel est directe. Par contre, dans les ACL étendues cela pose une problème. Les propriétaires et les autres seront directement associe avec les classes de même nom, par contre, les entrées de groupe et utilisateur nommé avec le groupe propriétaire seront tous associés avec la classe du groupe propriétaire. Par conséquent, le sens du classe groupe propriétaire doit être redéfinie comme la limite supérieure des permissions de chaque entrée dans pour la classe groupe.
 
-Comme dans les ACL étendues on peut avoir des entrées avec plusieurs utilisateurs et/ou groupes nomme, quelques de cette entrées peut-être contenir permissions qui la classe groupe n'aura pas, alors, on peut avoir une inconsistance dans certain cas. 
+Comme dans les ACL étendues on peut avoir des entrées avec plusieurs utilisateurs et/ou groupes nommés, quelques unes ces entrées peuvent contenir des permissions que la classe groupe n'aura pas, alors, on peut avoir des incohérences dans certain cas. 
 
-%@@
 
-Ce question serais résoudre avec l'utilisation de une masque. Comme on peut l'observer dans le figure (\ref{fig:img_acl-mapping}), il y a deux cas:  Les ACL minimales où la classe groupe est référencée pour l'entrée du groupe propriétaire. Les ACL étendues de la classe groupe seront trouvées en faisant un masque avec les permissions du groupe propriétaire et les permissions des utilisateurs et groupe nommés. Cela rend difficile le calcul de classe groupe. 
+Cette question peut se résoudre avec l'utilisation d'un masque. Comme on peut l'observer dans le figure (\ref{fig:img_acl-mapping}), il y a deux cas:  Les ACL minimales où la classe groupe est référencée pour l'entrée du groupe propriétaire. Les ACL étendues de la classe groupe seront trouvées en faisant un masque avec les permissions du groupe propriétaire, les permissions des utilisateurs nommés et groupe nommés. Cela rend difficil le calcul de classe groupe. 
 
 \begin{figure}[htbp]
 \centering
@@ -97,9 +96,9 @@ Ce question serais résoudre avec l'utilisation de une masque. Comme on peut l'o
 \end{figure}
  
  
-Pour assurer le cohérence, quand une application change les permissions (par exemple le commande \emph{chmod}) les ACL sont modifiée de façon a reproduire cette modification.
+Pour assurer le cohérence, quand une application change les permissions (par exemple le commande \emph{chmod}) les ACL sont modifiées de façon a reproduire cette modification.
  
-On a dit que la permission de la classe groupe est calculée comme la limite supérieure de tous les entrées dans le classe groupe. Avec les ACLs minimaux cette computation est simple, par contre, avec les ACLs étendu, on a besoin de masquer les permissions. Comme l'exemple de le tableau (\ref{tab:masquee}), les entrées de permission qui sont partie de la classe de groupe et qui aussi sont présente dans l'entrée masque sont applique effectivement. Si une permission était absent dans le masque, c'est a dire que aucun entrée de groupe (qui non le groupe du propriétaire) peut avoir ce permission, on dit dans ce cas qui la entrée est masquée.
+On a dit que les permissions du masque sont calculées comme la limite supérieure de tous les entrées dans le classe groupe. Avec les ACLs étendus, on a besoin de masquer les permissions. Comme l'exemple du tableau (\ref{tab:masquee}), les permission des entrées de la classe groupe et qui aussi sont présentes dans le masque sont appliquées. Si une permission est absente dans le masque, c'est à dire qu'aucune entrée de groupe ne peut avoir cette permission, on dit dans ce cas que l'entrée est masquée.
  
 \begin{center}
 \begin{tabular}{|l|l|l|}
@@ -112,7 +111,7 @@ Utilisateur nommée & user:jean:r-x & r-x\\
   \hline
 Masque & mask::rw- & rw-\\
   \hline
-\multicolumn{2}{|c|}{Permission Effective} & r--\\
+\multicolumn{2}{|c|}{Permission Effective} & rw-\\
   \hline
 \end{tabular}
 \label{tab:masque}
@@ -178,8 +177,60 @@ Si un répertoire est crée dans une autre, si le première répertoire a ACL pa
 Chaque \emph{system call} qui crée les objets du système de fichier a un \emph{mode parameter}. Ce paramètre peut contenir neuf octets de permission pour chaque classe (propriétaire, groupe et les autres). Les permissions de chaque objet créée sont l'intersection des permissions définies pour les ACL par défaut et le \emph{mode parameter}.
  
 Le système traditionnel a une commande pour désigner les modes de permissions par défaut pour les nouveaux fichiers et répertoires: le commande \emph{umask}. Quand il n'y a aucune ACL par défaut, la permission effective est déterminé par le \emph{mode parameter} moins les permissions configurés avec \emph{umask}.
+ \section{Implèmentassions}
  
-%@@\section{ACL en use}
+%il faut ajouter references
+Les ACLs sont fréquemment implémentées comme des extensions du noyau, c'est à dire des modules un système LINUX. L'objectif de cette section est d'expliquer de manière globale l'implémentions des ACL. 
+ 
+"Les ACLs sont des informations de taille variable qui sont associées avec les objets du systéme de fichier"\cite{aclsuse}. Plusieurs implémentations des ACLs sont possibles. Par exemple, avec Solaris, dans le système de fichier UFS\cite{acl_permission} chaque \emph{inode} peut avoir une ACL. S'l en a une, il doit avoir l'information \emph{i\_shadow}, un pointeur pour un \emph{shadow inode}. Les \emph{shadow inode} sont comment fichiers réguliers d'utilisateurs. Différent fichiers avec les mêmes ACL peut avoir pointeurs pour le même \emph{shadow inodes}. Les information des ACL sont garde dans les bloc de données de chaque \emph{shadow inodes}.
+ 
+La capacité d'associer des informations avec des fichiers est utilise dans plusieurs fonctions du système de exploitation. De ce fait, la plupart des systèmes \emph{UNIX-like} (de type Linux) on trouve les Attributs étendus (\emph{Extended Attributes (EAs)}). Les ACL sont implémentées avec ce mécanisme.
+
+
+La manpage \cite{aclsuse} \emph{attr(5)} contient des explications précises sur les EAs dans Linux. Comme les variables des processus, les EAs sont des paires (nom, valeur) associées de manière persistantes avec les objets du système de fichiers. Les appels système Linux pour les ACL, sont employées pour opérer sur les informations contenues dans ces paires dans le espace d'adresse du noyaux. Aussi l'implémentation des EA et des appels système dans FreeBSD sont documentés par l'article de Robert Watson\cite{trust}. Cette article content aussi une comparaison de plusieurs implèmentations de ces système.
+ 
+Dans le monde linux, ajouter le support aux ACL en les implémentant avec des EA limitée offre plusieurs avantages: un grande facilité d'implémentation, les opération sont atomiques et l'interface est sans état donc il n'y a aucune surcharge au niveau \emph{file handlers}. On ne doit pas oublier que l'implémentation doit être efficace car les ACL souvent utilisées.
+ 
+\subsection{Les EAs et les systémes de fichiers}
+ 
+Dans le monde UNIX, chaque système de fichier a une différent implémentation pour les EAs. On peut penser qu'une solution partagée pour l'ensemble des systèmes pourrait être plus efficace. Par exemple, si on prend une solution simple où chaque objet du système de fichiers a les EAs, un répertoire avec un fichier qui a le clés EA comment le nom et le contenu comment le valeur. Cette implémentation consommerait beaucoup de espace, étant donne que les blocks du système de fichier seront gaspilles pour conserver petit morceaux de donne, aussi ce solution perdrait les temps pour chercher ces information a chaque accès de fichier. Aux frais de ces problèmes chaque système tire profit de ces qualités pour ajouter le supporte aux EAs.
+ 
+\subsubsection*{Ext (2,3 et 4)}
+ 
+Les ACL dans Ext suivent le principe linux: "La solution la plus simple qui marche" et pour cette raison subviennent quelques limitations. D'autres solutions existent, par contre, elle sont difficiles à ajouter au noyau de manière satisfaisante\cite{ext_acl}.
+ 
+La solution actuelle ajoute aux \emph{i\_node} une entrée qui s'appelle \emph{i\_file\_acl}. Cette entrée, si différent de 0, est une ponter sur un bloc d'EAs. Ce bloc d'EAs a les informations de nom et valeur de tous les ACL du fichier indique pour cet \emph{i\_node}.
+ 
+Le mécanisme a aussi une optimisation. Deux fichiers avec le même ensemble de ACL point vers le même bloc d'EAs. Le système garde une \emph{hash map} avec les \emph{checksum} des blocs d'EAs et leurs adresse. Chaque block a aussi un compteur de référence, comme les liens \emph{hard}. Ce mécanisme détermine aussi que ce compteur là ne peut pas avoir plus que 1024 références. Il s'agit d'une mesure de sécurité en cas de perte des données.
+ 
+Aussi une limitation est imposée: toutes les données des EAs d'un fichier doivent occuper un bloc d'EAs ayant une taille de 1, 2 ou 4 KBs.
+ 
+ 
+\subsubsection*{JFS}
+ 
+Dans JFS, les EAs sont ajoutées dans une liste consécutive de blocs contigus (un entent).  Cela veut dire que chaque paire (nom,valeur) est gardée en séquence et que chaque valeur de la paire ne peut pas être plus grande que 64kb. Si les EAs sont assez petites, elles pourrons être gardées dans le même lieu que les informations du fichier. De ce façon, il n'y a pas les limitations d'ext3.
+ 
+\subsubsection*{XFS}
+XFS est sans aucun doute le système de fichiers le plus simple pour implémenter les EA. Les paires d'EA de petite tailles sont stockées directement dans l'inode, celles de taille moyenne sont stockées dans les blocs feuilles de l'arbre binaire et pour celle de grande taille, dans un arbre binaire complet.
+
+XFS peut configurer la taille de sa table d'inodes. La taille minimale est de 256 octet et la taille maximale peut aller jusqu'à la moitié des blocs du système de fichier. Dans le cas où on a une table de taille minimale, celle-ci n'est pas assez grande pour accueillir les ACLs. On doit alors les stocker de manière externe dans l'arbre binaire. Si on augmente la taille de la table les ACL pourront y être stockées. Les ACL étant très souvent interrogées par le système, cela augmente les performances en terme de temps d'accès au détriment de l'espace disque qu'elles consomment.
+XFS n'a pas de mécanisme de partage des attributs. La taille individuelle des attributs est limitée à 64Kb.
+ 
+\subsubsection*{ReiserFS}
+
+ReiserFS support le \emph{tail merging} qui permet à plusieurs fichiers de partager le même bloc pour stocker leurs données. Cela rend le système très efficace pour s'il on possède de nombreux fichiers de petite taille. De l'autre côte cette technique consomme beaucoup de ressources CPU. 
+
+Comme le ReiserFs peut facilement manipuler des petits fichiers, les EA peuvent être implémentées sous forme de petits fichiers. Pour chaque fichiers qui a un EA, un dossier spécial (qui est souvent cache) est créé avec un nom dérive de son inode. Dans ce dossier chaque EA est stockée dans un fichier sépare qui a pour nom le nom de l'attribut. Le contenu de chaque fichier est la valeur de l'attribut.
+
+Le système ReiserFS n'implémente pas le partage d'attributs mais la création d'une extension pour le gérer est possible. La taille individuelle des attributs est limitée à 64Kb.
+
+\section*{Système de fichiers à distance}
+%@@
+\subsubsection*{Samba}
+%@@
+\subsubsection*{NFS}
+%@@
+\section{ACL en use}
 %@@
 
 Dans cette session on verrais les uses des ACL dans les système d'aujourd'hui. 
@@ -389,74 +440,6 @@ Pour les fichiers ç'arrive aussi. Le commande \emph{touch} utilise le \emph{mod
 Enfin, aucune permission a été écraser dans le groupe classe, cependant, la masque a été appliqué. Ce politique s'assure que par exemple les application comme les compilateurs peuvent marcher bien avec les ACL, alors que même que ils ne supportent ce mécanisme, il peuvent créer les fichier avec les permission restreint et après les donner les permission d'exécution et quand même, les groupes et autres permission doivent marcher comme attendu. 
 
 
-\section{Implèmentassions}
- 
-%il faut ajouter references
-Les ACLs sont fréquemment implèmentèes comme extensions du noyau, c'est à dire des modules un systéme LINUX. L'objectif de cette section est d'expliquer de maniére globale l'implèmentions des ACL. 
-
-%@@
-------------------Le discussion doit lancer la base pour les èvaluations de performance et les problémes dans les sessions prochaines.----------
- 
-"Les ACLs sont des informations de taille variable qui sont associèes avec les objets du systéme de fichier"\cite{aclsuse}. Plusieurs implèmentations des ACLs sont possibles. Par exemple, avec Solaris, dans le systéme de fichier UFS\cite{acl_permission} chaque \emph{inode} peut avoir une ACL. S'l en a une, il doit avoir l'information \emph{i\_shadow}, un pointeur pour un \emph{shadow inode}. Les \emph{shadow inode} sont comment fichiers règuliérs d'utilisateurs. Différent fichiers avec les mÍmes ACL peut avoir pointeurs pour le mÍme \emph{shadow inodes}. Les information des ACL sont garde dans les bloc de donnèes de chaque \emph{shadow inodes}.
- 
-La capacitè d'associer des informations avec des fichiers est utilisè dans plusieurs fonctions du systéme de exploitation. De ce fait, la plupart des systémes \emph{UNIX-like} (de type Linux) on trouve les Attributs …tendus (\emph{Extended Attributes (EAs)}). Les ACL sont implèmentèes avec ce mècanisme.
-
-%@@ 
-La manpage \cite{aclsuse} \emph{attr(5)} contient des explications prècises sur les EAs dans Linux, ------------au notre but, suffit dire que comme les variables des processus, les EAs sont des paires (nom, valeur) associèes de maniére persistantes avec les objets du systéme de fichiers et que les appels Linux, dans le espace de utilisateur, sont employè pour opèrer sur les information de ces paires dans le espace de adresse du noyaux. Aussi pour l'implèmentation de cette infrastructure dans les systéme FreeBSD il faut voir le article de Robert Watson\cite{trust}. -------------------------------Cette article content aussi une comparaison de plusieurs implèmentation de ces systéme.
- 
-%@@
-Dans le monde linux, ajouter le support aux ACL avec une version limitèe des EA offre plusieurs avantages: un grande facilitè d'implèmentation, ----------------opèration atomique et interface \emph{stateless} que laisse aucun surcharge à cause de les \emph{file handlers}. On verra aprés dans la section de performance, que l'efficience est assez importante pour Ítre oublier quand on parle de les donnès frèquentent accés comme les ACL.-----------------
- 
-\subsection{Les EAs et les systémes de fichiers}
- 
-Dans le monde UNIX, chaque systéme de fichier a une différent implèmentation pour les EAs. On peut penser qu'une solution partagèe pour l'ensemble des systémes pourait Ítre plus efficace. Par exemple, si on prend une solution simple où chaque objet du systéme de fichiers a les EAs, un rèpertoire avec un fichier qui a le clès EA comment le nom et le contenu comment le valeur. Cette implèmentation consommerait beaucoup de espace, ètant donnè que les blocks du systéme de fichier seront gaspillès pour conserver petit morceaux de donnè, aussi ce solution perdrait les temps pour chercher ces information a chaque accés de fichier. Aux frais de ces problémes chaque systéme tire profit de ces qualitès pour ajouter le supporte aux EAs.
- 
-\subsubsection*{Ext (2,3 et 4)}
- 
-Les ACL dans Ext suivent le principe linux: "La solution la plus simple qui marche" et pour cette raison subviennent quelques limitations. D'autres solutions existent, par contre, elle sont difficiles à ajouter au noyau de maniére satisfaisante\cite{ext_acl}.
- 
-La solution actuelle ajoute aux \emph{i\_node} une entrèe qui s'appelle \emph{i\_file\_acl}. Cette entrèe, si différent de 0, est une ponteur sur un bloc d'EAs. Ce bloc d'EAs a les informations de nom et valeur de tous les ACL du fichier indiquè pour cet \emph{i\_node}.
- 
-Le mècanisme a aussi une optimisation. Deux fichiers avec le mÍme ensemble de ACL point vers le mÍme bloc d'EAs. Le systéme garde une \emph{hash map} avec les \emph{checksum} des blocs d'EAs et leurs adresse. Chaque block a aussi un compteur de rèfèrence, comme les liens \emph{hard}. Ce mècanisme dètermine aussi que ce compteur là ne peut pas avoir plus que 1024 rèfèrences. Il s'agit d'une mesure de sècuritè en cas de perte des donnèes.
- 
-Aussi une limitation est imposèe: toutes les donnèes des EAs d'un fichier doivent occuper un bloc d'EAs ayant une taille de 1, 2 ou 4 KBs.
- 
- 
-\subsubsection*{JFS}
- 
-Dans JFS, les EAs sont ajoutèes dans une liste consècutive de blocs contigus (un extent).  Cela veut dire que chaque paire (nom,valeur) est gardèe en sèquence et que chaque valeur de la paire ne peut pas Ítre plus grande que 64kb. Si les EAs sont assez petites, elles pourrons Ítre gardèes dans le mÍme lieu que les informations du fichier. De ce faÁon, il n'y a pas les limitations d'ext3.
- 
-\subsubsection*{XFS}
-XFS est sans aucun dout le systéme de fichiers le plus simple pour implèmenter les EA. Les paires d'EA de petite tailles sont stockèes directement dans l'inode, celles de taille moyenne sont stockèes dans les blocs feuilles de l'arbre binaire et pour celle de grande taille, dans un arbre binaire complet.------------manque--------
-XFS peut configurer la taille de sa table d'inodes. La taille minimale est de 256 octet et la taille maximale peut aller jusqu'à la moitiè des blocs du systéme de fichier. Dans le cas où on a une table de taille minimale, celle-ci n'est pas assez grande pour accueillir les ACLs. On doit alors les stocker de maniére externe ----au systéme de fichier----. Si on augmente la taille de la table les ACL pourront y Ítre stockèes. Les ACL ètant trés souvent interrogèes par le systéme, cela augmente les performances en terme de temps d'accés au dètriment de l'espace disque qu'elles consomment.
-XFS n'a pas de mècanisme de partage des attributs. La taille individuelle des attributs est limitèe à 64Kb.
- 
-\subsubsection*{ReiserFS}
-
-%@@
-
-ReiserFS support le \emph{tail merging} qui permet à plusieurs fichiers de partager le mÍme bloc pour stocker leurs donnèes. Cela rend le systéme trés efficace pour s'il on posséde de nombreux fichiers de petite taille. De l'autre cÙtè cette technique consomme beaucoup de ressources CPU. 
-
-Comme le ReiserFs peut facilement manipuler des petits fichiers, les EA peuvent Ítre implèmentèes sous forme de petits fichiers. Pour chaque fichiers qui a un EA, un dossier spècial (qui est souvent cachè) est crèè avec un nom dèrivè de son inode. Dans ce dossier chaque EA est stockèe dans un fichier sèparè qui a pour nom le nom de l'attribut. Le contenu de chaque fichier est la valeur de l'attribut.
-
-Le systéme ReiserFS n'implèmente pas le partage d'attributs mais la crèation d'une extension pour le gèrer est possible. La taille individuelle des attributs est limitèe à 64Kb.
-
-%@@
-----------------------Sharing could even be implemented
-on a per-attribute bases, so the result would be
-a highly efficient and flexible solution. --------------The size of individual
-attributes is limited to 64 KiB.
-
-\subsubsection*{HGFS+}
-
-%@@
-\section*{Système de Fichier Remote}
-%@@
-\subsubsection*{Samba}
-%@@
-
-\subsubsection*{NFS}
-%@@
 \section*{Problèmes}
 
 \subsection*{Compatibilité}
@@ -476,13 +459,7 @@ Un aspect très important et usuellement oublier sont les copie de sécurité. L
 
 Une format appelle \emph{pax (Portable Archive Interchange)} a été défini pour POSIX pour résoudre ce problème. Le outil \emph{pax} peut comprendre les format de \emph{cpio} et \emph{tar} et aussi le nouveaux format \emph{pax}. Ce nouveau format a les \emph{extended headers} que peuvent décrire les EAs. Le outil \emph{tar} peut le lire par contre il doit perdre les information de ACL. 
 
-On peau aussi utiliser \emph{getfacl} et \emph{setfacl} comment outils pour faire les copie de les droits d'accès, par contre, c'est pas pratique de les user si on a pas une copie de sécurité complète, mais quelques fichiers. \section*{Conclusion}
-
-\newpage
-
-% Le utilisateurs
-% le complication atacher
-\begin{thebibliography}{9}
+On peau aussi utiliser \emph{getfacl} et \emph{setfacl} comment outils pour faire les copie de les droits d'accès, par contre, c'est pas pratique de les user si on a pas une copie de sécurité complète, mais quelques fichiers. \begin{thebibliography}{9}
  
 \bibitem{aclsuse}
   Andreas Gruenbacher,
