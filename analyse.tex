@@ -1,3 +1,20 @@
-\section*{Analyse de Performance}
+\section*{Problèmes}
 
+\subsection*{Compatibilité}
 
+Il y deux situation qui devons être considère quand on parle de j'ajutage les nouvelle fonctionnalité aux système de fichiers et consequentent au noyaux: les mises a jour et comme le système qui ne sont pas mise a jour répondre.
+Aussi il faut qu'on sache que quand on a besoin de un noyaux plus léger, par exemple pour démarré le système de récupération, et que dans cette cas on ne veut pas avoir les EAs dans le noyaux. 
+
+Tous les système de fichier que n'avons pas le supporte a les ACl activé on a mécanisme de mis en place le supporte dans le moment de montage or automatiquement dans le première use de les EAs, sans l'interférence d'utilisateur. 
+
+On espère que les vieux version du noyaux n'arrêtions pas de marcher avec les ACL. Dans un noyaux on les ACL ne sont pas supporté, les système de fichiers que implementent les ACL dans les répertoire , comme le ReiserFS, devient venir visible. Il faut quand même que les droit de permission de ces fichiers sont configure de façon que les utilisateurs ne peuvent pas changer les information de manière inadéquat. Un autre exemple c'est avec le système de fichier ext2 et ext3, si on effacer les fichier avec les ACL dans le kernel sans les support les information des ACL ne seront pas effacer, alors, on peut exécuter manuellement la vérification du système après pour mettre a jour les information. 
+ 	
+Aussi le mécanisme de héritage ne marcherai pas. 
+
+\subsection*{Copie de Sécurité}
+
+Un aspect très important et usuellement oublier sont les copie de sécurité. Les outils comment \emph{cpio} et \emph{tar} ne connait pas les ACL. Ça veut dire que quand on doit garder notre information, si on en faire avec ces outils on perdra les EAs.
+
+Une format appelle \emph{pax (Portable Archive Interchange)} a été défini pour POSIX pour résoudre ce problème. Le outil \emph{pax} peut comprendre les format de \emph{cpio} et \emph{tar} et aussi le nouveaux format \emph{pax}. Ce nouveau format a les \emph{extended headers} que peuvent décrire les EAs. Le outil \emph{tar} peut le lire par contre il doit perdre les information de ACL. 
+
+On peau aussi utiliser \emph{getfacl} et \emph{setfacl} comment outils pour faire les copie de les droits d'accès, par contre, c'est pas pratique de les user si on a pas une copie de sécurité complète, mais quelques fichiers. 
