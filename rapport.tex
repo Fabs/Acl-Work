@@ -230,18 +230,18 @@ Le système ReiserFS n'implémente pas le partage d'attributs mais la création 
 %@@
 \subsubsection*{NFS}
 %@@
+
 \section{ACL en use}
-%@@
 
 Dans cette session on verrais les uses des ACL dans les système d'aujourd'hui. 
 
 \subsection{ACL Kernel Patches}
-Les ACL \emph{patches} ont été ajouter dans le noyaux Linux depuis November 2002. Cette \emph{patches} implémentent le POSIX 1003.1e brouillon 17 et elles ont été ajoute dans le version 2.5.46 du noyaux. Donc le support ACL et aussi présent dans le dernière version du noyaux aujourd'hui. Depuis 2004 le support aux ACL étions disponible pour les système de fichier Ext2, Ext3, IBM JFS, ReiserFS et SGI XFS. Les ACL sont supporte aussi pour le système NFS, par contre, il y a quelques problèmes de sécurité connu\cite{nfs_problem}. 
+Les ACL \emph{patchs} ont été ajouté dans les noyaux Linux depuis Novembre 2002. Ces \emph{patchs} implémentent le POSIX 1003.1e draft 17 et elles ont été ajoutées dans la version 2.5.46 du noyau. Donc le support des ACL et aussi présent dans le dernière version du noyau actuel. Depuis 2004 le support aux ACL est disponible pour les système de fichiers Ext2, Ext3, IBM JFS, ReiserFS et SGI XFS. Les ACL sont supportés aussi pour le système NFS, par contre, quelques problèmes de sécurité sont connus\cite{nfs_problem}. 
 
-Aujourd'hui c'est assez simple pour ajouter le supporte aux ACL dans les distribution Linux comme Ubuntu ou Debian. On verrais les pas pour ajouter ce supporte après.
+Aujourd'hui il est assez simple d'ajouter le support aux ACL dans les distributions Linux comme Ubuntu ou Debian. On verra marche à suivre pour ajouter ce support après.
 
 \subsection{Mac OSX}
-Le système de exploitation Mac OSX (10.6.2 Snow Leopard dans le moment de écriture de ce article) a aussi les supporte aux ACL complètement intégrée dans l'interface de utilisateur (\ref{fig:img_mac-acl}). 
+Le système de exploitation Mac OSX (10.6.2 Snow Leopard au moment où ces lignes sont écrites) supporte aussi les ACL et elles sont complètement intégrées à l'interface de l'utilisateur (\ref{fig:img_mac-acl}). 
 
 \begin{figure}[htbp]
 	\centering
@@ -250,31 +250,27 @@ Le système de exploitation Mac OSX (10.6.2 Snow Leopard dans le moment de écri
 	\label{fig:img_mac-acl}
 \end{figure}
 
-
-%Parler un peut plus de Mac.
-
-
-\subsection*{Using ACL in Linux}
+\subsection*{Utiliser les ACL sous Linux}
 
 
 %References 
-Les dernière version des distribution Debian ou Ubuntu, comme Ubuntu 9.10, dèjá vient avec le supporte aux ACL. Dans le Ubuntu 8.10 l'application Nautilus, qui est responsable pour la visualisation du système de fichier, contenait une interface pour les ACL, apparentement l'interface a été discontinue et le Nautilus du Ubuntu 9.10 n'en y a pas encore. Les pas pour ajouter le supporte dans le Ubuntu 9.10 sont:
+Les dernières versions des distributions de Debian ou Ubuntu, comme Ubuntu 9.10, viennent avec le support des ACL. Dans Ubuntu 8.10 l'application Nautilus, qui est responsable pour la visualisation du système de fichiers, contenait une interface pour les ACL, qui a apparemment disparues dans les version suivantes et Nautilus dans Ubuntu 9.10 ne l'intègre pas. La marche à suivre pour ajouter le support des ACL dans le Ubuntu 9.10 est la suivante:
 
 \begin{verbatim}
 1) Installer le paquet des acl. 
 user@ubuntu:$ sudo apt-get install acl
- 
-2) Ajouter le option 'acl' au système de fichier correcte dans le /etc/fstab, comment:
+
+2) Ajouter l'option 'acl' au système de fichier correct dans le /etc/fstab, comme:
 UUID='gros sequence' /dev/hda6 /home ext3 rw,auto,acl 0 1
 
-3) Remounter le systeme de fichier avec le nouvelle option
+3) Remonter le système de fichiers avec la nouvelle option
 user@ubuntu:$ sudo mount /home -o remount
 
 \end{verbatim}
 
-\subsection*{Ajouter ACL aux fichiers}
+\subsection*{Ajouter les ACL aux fichiers}
 
-On peut utiliser le commande 'ls -la' pour regarde les permission. Si une fichier contient information de sécurité avancée (comme \emph{access list}) on va voir le "character" '+', comment dans le sortie du command 'ls' ci-dessous (\ref{verb:ls}). Une fichier avec '@' était dire que le fichier a quelque EAs. 
+On peut utiliser le commande 'ls -la' pour regarde les permissions. Si un fichier contient information de sécurité avancée (comme les ACL) on va voir le caractère '+', comme dans la sortie du command 'ls' ci-dessous (\ref{verb:ls}). Un fichier avec devant une '@' veut dire que le fichier contient EAs. 
 
 \begin{center}
 \label{verb:ls}
@@ -290,7 +286,7 @@ drwxrwxr-x+ 3 fabsn  staff	  1024  8 Nov 20:23 repertoire
 \end{verbatim}
 \end{center}
 
-Pour voir les ACL on doit utilise le commande \emph{getfacl}. Regarde que les information sont ajoute d'accord avec les définition dans l'introduction sur les ACL dans la tabelle \ref{tab:entree}. 
+Pour voir les ACL on doit utiliser la commande \emph{getfacl}. Les informations sont ajoutées en accord avec les définitions données dans l'introduction sur les ACL dans la tableau \ref{tab:entree}. 
 
 \begin{verbatim}
 fabsn@vadmin:/media/esisar$ getfacl repertoire/
@@ -309,17 +305,17 @@ mask::rwx
 other::r-x	
 \end{verbatim}
 
-Aussi on a le commande \emph{setfacl} pour modifier, ou ajouter les permission ACL. Le commande dessous par exemple modifie (-m) les permission du utilisateur \emph{fabsn} pour le répertoire. 
+Aussi il y a la commande \emph{setfacl} pour modifier, ou ajouter des permissions ACL. La commande ci-dessous modifie (-m) par exemple les permissions du l'utilisateur \emph{fabsn} pour le répertoire. 
 
 \begin{verbatim}
-setfacl -m u:fabsn:r-x repertoire
+setfacl -m user:fabsn:r-x repertoire
 \end{verbatim}
 
 \subsection*{Exemple ACL d'accès}
 
-Voici une exemple d'utilisation trouvable dans le article d'Andreas Gruembacher\cite{aclsuse}.
+Voici un exemple d'utilisation que l'on peut trouver dans l'article d'Andreas Gruembacher\cite{aclsuse}.
 
-On parte de la création de un répertoire avec l'application de umask de valeur 027 (octal). Ça veut dire que il va   désactiver l'écriture pour le groupe propriété et l'écriture, la lecture e l'exécution pour les autres.
+On part de la création d'un répertoire avec l'application de umask de valeur 027 (octal). Cela veut dire qu'il va désactiver le droit d'écriture pour le groupe propriétaire et l'écriture, la lecture et l'exécution pour les autres.
 
 \begin{verbatim}
 $ umask 027 
@@ -328,7 +324,7 @@ $ ls -dl repertoire
 	drwxr-x--- ... user group ... repertoire
 \end{verbatim}
 
-La lettre "d" montre que on l'objet "répertoire" c'est une répertoire suivi pour les octet de permission "rwxr-x---". Les réticences dans le command supprime les information avec aucune pertinence pour cette exemple. Cette permission basic on toujours une représentation dans les ACL, pour les afficher on faire:
+La lettre "d" montre que l'objet "répertoire" est un répertoire suivi par les octets de permission "rwxr-x---". Les "..." dans la sortie masquent les informations inutiles pour cet exemple. Ces permissions basiques ont toujours une représentation dans les ACL, pour les afficher on fait:
 
 \begin{verbatim}
 $ getfacl repertoire
@@ -340,7 +336,7 @@ group::r-x
 other::---
 \end{verbatim}
 
-Le trois première ligne après le commande (démarrer pour le \#) nous donne les information sur les propriétaire (groupe e utilisateur) et le nom du fichier. Après chaque ligne vient la liste des ACL. Ce exemple montre une ACL minimale. Si par exemple on ajoute permissions pour le utilisateur "jean" avec le commande \emph{setfacl} on va avoir les ACL étendu.
+Le trois premières lignes après commande (qui démarrent par le \#) nous donnent les informations sur les propriétaires (groupe et utilisateur) et le nom du fichier. Après chaque ligne vient la liste des ACL. Cet exemple montre un ACL minimal. Si par exemple on ajoute les permissions "rwx" pour l'utilisateur "jean" avec la commande \emph{setfacl} on va avoir des ACL étendus.
 
 \begin{verbatim}
 $ setfacl -m user:jean:rwx repertoire
@@ -352,19 +348,18 @@ $ getfacl --omit-header repertoire
 	other::---
 \end{verbatim}
 
-Il faut rappeler que le command \emph{setfacl} a été employer avec le modificateur \emph{-m (modify)}. Pour regarder les résultat on utilisé une autre fois le \emph{getfacl}. Il faut savoir que le modificateur \emph{--omit-header} cache les première 3 ligne avec les information sur les propriétaires.  
+Il faut rappeler que le commande \emph{setfacl} a été employée avec l'argument \emph{-m (modify)}. Pour observer les résultats on utilise encore une autre fois \emph{getfacl}. Il faut savoir que l'argument \emph{--omit-header} cache les premières 3 lignes avec les informations sur les propriétaires.  
 
-Tout d'abord on peut voir que l'entrée masque a été ajouter avec l'entrée d'utilisateur jean. Ces permission sont crée comme la union entré les permission de jean et du groupe propriétaire. La masque doit être une valeur que ne masque aucune permission, alors, ce valeur se trouve comme l'union de les élément que définissions la classe groupe.  
+Tout d'abord on peut voir que l'entrée masque a été ajoutée. Ces permissions sont créées comme l'union entre les permissions de jean et du groupe propriétaire. Le masque doit être une valeur qui ne masque aucune permission.  
 
 \begin{verbatim}
 ls -dl repertoire
 	drwxrwx---+ ... user group ... repertoire
 \end{verbatim}
 
-Si on rappel le dernière exemple, le groupe propriétaire n'y a pas le droit de écriture (\emph{group::r-x}), par contre, les groupe classe vient avec ce droit. C'est pour ça que quand on calcule effectivement le droit pour le groupe propriétaire dans le modèle acl, ce droit est toujours le union avec la masque.
+Si on se rappelle le dernier exemple, le groupe propriétaire n'a pas le droit en écriture (\emph{group::r-x}), par contre, la classe groupe a ce droit. C'est pour cela que quand on calcule effectivement le droit avec la permission de jean, le masque devient "rwx".
 
-Le prochaine exemple montre comme lest ACL sont modifiée pour l'emploie du command \emph{chmod} ou \emph{setfacl}. On va effacer le permission de écrit de la classe groupe. On doit voir que si il n'y a pas de masque, le command doit changer directement les permission dé l'entrée ACL du groupe propriétaire. 
-
+Le prochain exemple montre comment les ACL sont modifiés avec l'emploi de commande \emph{chmod}. On va effacer la permission d'écriture de la classe groupe.
 
 \begin{verbatim}
 $ chmod g-w repertoire 
@@ -379,7 +374,9 @@ other::---
 
 \end{verbatim}
 
-Si une ACL entrée contient permission désactivé pour le masque, getfacl doit ajouter une commentaire qui montre ça différence. Il faut voir aussi qu'est-ce que se passe quand on rajoute le permission. 
+Si une ACL entrée contient une permission désactivé pour le masque, \emph{getfacl} ajoute un commentaire qui montre cette différence.
+
+On va voir maintenant ce qui se passe quand on rajoute la permission. 
 
 \begin{verbatim}
 $ chmod g+w repertoire 
@@ -393,32 +390,32 @@ mask::rwx
 other::---
 \end{verbatim}
 
-Cette exemple montre que les changes avec le commande \emph{chmod} ne sont pas destructives. Les opérations sont complètement réversibles et les permission avant et après les deux opération d'aller et retour sont les mêmes, une caractéristique très important de les ACL POSIX. 
+Cet exemple montre que les changements effectués avec la commande \emph{chmod} ne détruises pas les ACL. Les opérations sont complètement réversibles et les permissions d'avant et d'après les deux opérations sont les mêmes: c'est une caractéristique très importante des ACL POSIX. 
 
 \subsection*{Exemple des ACL par défaut}
 
-Avec le modifier -d, on peut ajouter les ACL par défaut d'un répertoire. 
+Avec l'argument -d, on peut afficher les ACL par défaut d'un répertoire. 
 
 \begin{verbatim}
-$ setfacl -d -m group:admin:r-x repertoire 
+$ setfacl -d -m group:admin:rwx repertoire 
 $ getfacl --omit-header repertoire 
 user::rwx
 user:jean:rwx
-group::r-x 
+group::rwx 
 mask::rwx
 other::---
 default:user::rwx
 default:group::r-x
-default:group:admin:r-x
+default:group:admin:rwx
 default:mask::r-x
 default:other::---
 \end{verbatim} 
 
-Les ACL par défaut vient après les ACL d'accès et sont préfixe pour le chaîne de caractères "default::". Le courent ce que quand on ajoute une nouvelle règle seulement dans les ACL d'accès comme on a faire pour le groupe \emph{admin} aucune chose change avec les ACL par défaut. Par contre, il y a une extension sur linux que ajoute de manière automatique le règle dans les ACL par défaut. 
+Les ACL par défaut viennent après les ACL d'accès et sont préfixés par la chaîne de caractères "default::". D'habitude quand on ajoute une nouvelle règle dans les ACL d'accès comme on a fait pour le groupe \emph{admin} n'affecte pas les ACL par défaut. Par contre, il y a une extension sur Linux qui ajoute de manière automatique la règle dans les ACL par défaut. 
 
-Il faut voir que il n y a pas aucun entrée pour jean dans les défaut ACL, alors, jean n'aura pas accès dans le nouvelle objet crée dans le répertoire (sauf si il est membre de un groupe qui a les permission). 
+Il faut voir qu'il n'y a aucune entrée pour jean dans les défaut ACL, alors, jean n'aura pas accès dans le nouvelle objet crée dans le répertoire (sauf c'est membre d'un groupe qui a les permissions). 
 
-D'accord avec le mécanisme d'héritage qu'on a vu dans le page \ref{sec:heritage}, le sub-repertoire doit hériter les ACL de sont parent. Par défaut, le command \emph{mkdir} utilise une \emph{mode parameter} de 0777 pour ce appel de système. Observez:
+En accord avec le mécanisme d'héritage que l'on vu dans le page \ref{sec:heritage}, le sous-répertoire doit hériter des ACL de son père. Par défaut, la commande \emph{mkdir} utilise un \emph{mode parameter} de 0777 pour cet appel de système. On observe:
 
 \begin{verbatim}
 $ mkdir repertoire/subrep 
@@ -435,31 +432,33 @@ default:mask::r-x
 default:other::---
 \end{verbatim}
 
-Pour les fichiers ç'arrive aussi. Le commande \emph{touch} utilise le \emph{mode value} 0666. Tous les permission que ne sont pas présent dans le \emph{mode parameter} sont écraser.
+Pour les fichiers cela arrive aussi. La commande \emph{touch} utilise le \emph{mode parameter} 0666. Toutes les permissions qui ne sont pas présente dans le \emph{mode parameter} sont écrasées.
 
-Enfin, aucune permission a été écraser dans le groupe classe, cependant, la masque a été appliqué. Ce politique s'assure que par exemple les application comme les compilateurs peuvent marcher bien avec les ACL, alors que même que ils ne supportent ce mécanisme, il peuvent créer les fichier avec les permission restreint et après les donner les permission d'exécution et quand même, les groupes et autres permission doivent marcher comme attendu. 
+Enfin, aucune permission n'a été écrasée dans le groupe classe, cependant, la masque a été appliqué. Cette politique s'assure que par exemple les application comme les compilateurs peuvent fonctionner avec les ACL même s'ils ne supportent ce mécanisme. Ils peuvent créer des fichiers avec des permissions restreintes et ensuite donner les permissions d'exécution et sans que les groupes et autres permissions ne soient affectés.
 
 
 \section*{Problèmes}
 
 \subsection*{Compatibilité}
 
-Il y deux situation qui devons être considère quand on parle de j'ajutage les nouvelle fonctionnalité aux système de fichiers et consequentent au noyaux: les mises a jour et comme le système qui ne sont pas mise a jour répondre.
-Aussi il faut qu'on sache que quand on a besoin de un noyaux plus léger, par exemple pour démarré le système de récupération, et que dans cette cas on ne veut pas avoir les EAs dans le noyaux. 
+Il y deux situations qui problèmes qui être considérés quand on désire ajouter de nouvelles fonctionnalitées aux systèmes de fichiers (et donc au noyau): la mise à jour et comment un système qui n'a pas été mis à jour répond.
+Aussi il faut s'il on a besoin d'un noyau plus léger, par exemple pour démarré le système de récupération, pouvoir désactiver les EAs. 
 
-Tous les système de fichier que n'avons pas le supporte a les ACl activé on a mécanisme de mis en place le supporte dans le moment de montage or automatiquement dans le première use de les EAs, sans l'interférence d'utilisateur. 
+Quand on ajoute le support des ACL, tous les systèmes de fichiers qui n'on pas les ACL activées on a mécanisme de mise en place de leur support au moment du montage ou de manière automatique dans le première utilisation des EAs. 
 
-On espère que les vieux version du noyaux n'arrêtions pas de marcher avec les ACL. Dans un noyaux on les ACL ne sont pas supporté, les système de fichiers que implementent les ACL dans les répertoire , comme le ReiserFS, devient venir visible. Il faut quand même que les droit de permission de ces fichiers sont configure de façon que les utilisateurs ne peuvent pas changer les information de manière inadéquat. Un autre exemple c'est avec le système de fichier ext2 et ext3, si on effacer les fichier avec les ACL dans le kernel sans les support les information des ACL ne seront pas effacer, alors, on peut exécuter manuellement la vérification du système après pour mettre a jour les information. 
+On désire que les anciennes versions du noyau continent à marcher bien qu'il possède un système de fichier comportant des ACL. Dans un noyau où les ACL ne sont pas supportées, les systèmes de fichiers que implementent les ACL dans les répertoire, comme le ReiserFS, soient visibles. Il faut quand même que les droits de permission de ces répertoires soient configurés de façon à ce que les utilisateurs ne peuvent pas changer les informations de ces répertoire (ce qui mettrait en péril le système d'ACL). Avec le système de fichier ext2 et ext3, si on efface les fichiers avec contenant des ACL avec un noyau qui ne supporte les ACL, les ACL ne seront pas effacés, alors, on doit exécuter manuellement la vérification du système de fichiers pour le mettre à jour. 
  	
-Aussi le mécanisme de héritage ne marcherai pas. 
+Aussi le mécanisme d'héritage pour un noyau ne supportant pas les ACL ne marchera pas. 
 
 \subsection*{Copie de Sécurité}
 
-Un aspect très important et usuellement oublier sont les copie de sécurité. Les outils comment \emph{cpio} et \emph{tar} ne connait pas les ACL. Ça veut dire que quand on doit garder notre information, si on en faire avec ces outils on perdra les EAs.
+Un aspect très important et habituellement oublié est la copie de sécurité. Les outils comme \emph{cpio} et \emph{tar} ne connaissent pas les ACL. Cela veut dire qu'on perdra les information des ACL, si on en fait ces opérations avec ces outils car on perdra les EAs.
 
-Une format appelle \emph{pax (Portable Archive Interchange)} a été défini pour POSIX pour résoudre ce problème. Le outil \emph{pax} peut comprendre les format de \emph{cpio} et \emph{tar} et aussi le nouveaux format \emph{pax}. Ce nouveau format a les \emph{extended headers} que peuvent décrire les EAs. Le outil \emph{tar} peut le lire par contre il doit perdre les information de ACL. 
+Une format appelé \emph{pax (Portable Archive Interchange)} a été défini pour POSIX pour résoudre ce problème. L'outil \emph{pax} peut comprendre les formats de \emph{cpio} et \emph{tar} et aussi le nouveaux format \emph{pax}. Ce nouveau format possède les \emph{extended headers} qui peuvent décrire les EAs. L'outil \emph{tar} peut le lire par contre il va perdre les informations des ACL. 
 
-On peau aussi utiliser \emph{getfacl} et \emph{setfacl} comment outils pour faire les copie de les droits d'accès, par contre, c'est pas pratique de les user si on a pas une copie de sécurité complète, mais quelques fichiers. \begin{thebibliography}{9}
+On peut aussi utiliser \emph{getfacl} et \emph{setfacl} comme des outils pour faire des copie de droits d'accès, par contre, leur utilisation n'est pas pratique. Si on désire effectuer une copie de sécurité complète ces outils sont adéquat mais pas pour quelques fichiers. 
+
+\begin{thebibliography}{9}
  
 \bibitem{aclsuse}
   Andreas Gruenbacher,
