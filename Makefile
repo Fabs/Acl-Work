@@ -1,7 +1,7 @@
-all: clean article twocolumn draft
+all: clean article 
 	rm -f rapport-draft.tex rapport-original.tex rapport-two.tex
 	mv rapport-original.pdf rapport.pdf
-	xpdf rapport-draft.pdf
+	xpdf rapport.pdf
 
 article:
 	cat header rapport.tex > rapport-original.tex
