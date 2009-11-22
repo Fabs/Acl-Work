@@ -1,3 +1,5 @@
+\documentclass{article}
+
 %Language and Encoding
 \usepackage[francais]{babel}
 \usepackage[utf8]{inputenc}
@@ -9,6 +11,9 @@
 \usepackage{algorithmic}
 \usepackage{algorithm}
 
+%Index
+\usepackage{makeidx}	
+\makeindex
 
 %Info
 \title{\textbf{Contrôle d'accès e le POSIX Access Control Lists(ACL)} \\ CS435 - Administration de Système }
@@ -19,6 +24,8 @@
 
 \maketitle
 \newpage
+\printindex
+
 
 \section*{Introduction}
 %Problème et solution plus simple
@@ -29,6 +36,7 @@ Ce mode, traditionnel, assez simple est capable de résoudre les problèmes les 
 
 % La solution ACL
 Pour remédier à ces limitations, les systèmes UNIX peuvent employer les ACL. Cet article présente une exposition sur les ACL POSIX, ses modes de fonctionnement, ses qualités et désavantages. Le texte s’inspire de l'article d’Andreas Gruembacher\cite{aclsuse} qui a fait partit de l’équipe ayant ajouté le support aux ACL dans le noyaux Linux pour les systèmes de fichiers ext2 et ext3, qui sont les plus utilisés dans les monde UNIX.
+
 \section{Le POSIX 1003.1}
  
 Traditionnellement les systèmes qui implémentaient la norme POSIX avaient un système simple et puissant de permissions mais qui cependant posait certains problèmes. En effet, les différentes versions d'ACL disponibles étaient incompatibles entre elles.
@@ -86,7 +94,7 @@ Quand le programme utilise des ACL minimales ce problème n'arrive jamais: la re
 Comme dans les ACL étendues on peut avoir des entrées avec plusieurs utilisateurs et/ou groupes nommés, quelques unes ces entrées peuvent contenir des permissions que la classe groupe n'aura pas, alors, on peut avoir des incohérences dans certain cas. 
 
 
-Cette question peut se résoudre avec l'utilisation d'un masque. Comme on peut l'observer dans les figures (\ref{fig:img_acl-mapping1} et \ref{fig:img_acl-mapping2	} ) , il y a deux cas:  Les ACL minimales où la classe groupe est référencée pour l'entrée du groupe propriétaire. Les ACL étendues de la classe groupe seront trouvées en faisant un masque avec les permissions du groupe propriétaire, les permissions des utilisateurs nommés et groupe nommés. Cela rend difficil le calcul de classe groupe. 
+Cette question peut se résoudre avec l'utilisation d'un masque. Comme on peut l'observer dans les figures (\ref{fig:img_acl-mapping1} et \ref{fig:img_acl-mapping2}) , il y a deux cas:  Les ACL minimales où la classe groupe est référencée pour l'entrée du groupe propriétaire. Les ACL étendues de la classe groupe seront trouvées en faisant un masque avec les permissions du groupe propriétaire, les permissions des utilisateurs nommés et groupe nommés. Cela rend difficile le calcul de classe groupe. 
 
 \begin{figure}[htbp]
 \centering
@@ -185,7 +193,29 @@ Si un répertoire est crée dans une autre, si le première répertoire a ACL pa
 Chaque \emph{system call} qui crée les objets du système de fichier a un \emph{mode parameter}. Ce paramètre peut contenir neuf octets de permission pour chaque classe (propriétaire, groupe et les autres). Les permissions de chaque objet créée sont l'intersection des permissions définies pour les ACL par défaut et le \emph{mode parameter}.
  
 Le système traditionnel a une commande pour désigner les modes de permissions par défaut pour les nouveaux fichiers et répertoires: le commande \emph{umask}. Quand il n'y a aucune ACL par défaut, la permission effective est déterminé par le \emph{mode parameter} moins les permissions configurés avec \emph{umask}.
- \section{Implèmentassions}
+
+\section*{Problèmes}
+
+\subsection*{Compatibilité}
+
+Il y deux situations qui problèmes qui être considérés quand on désire ajouter de nouvelles fonctionnalitées aux systèmes de fichiers (et donc au noyau): la mise à jour et comment un système qui n'a pas été mis à jour répond.
+Aussi il faut s'il on a besoin d'un noyau plus léger, par exemple pour démarré le système de récupération, pouvoir désactiver les EAs. 
+
+Quand on ajoute le support des ACL, tous les systèmes de fichiers qui n'on pas les ACL activées on a mécanisme de mise en place de leur support au moment du montage ou de manière automatique dans le première utilisation des EAs. 
+
+On désire que les anciennes versions du noyau continent à marcher bien qu'il possède un système de fichier comportant des ACL. Dans un noyau où les ACL ne sont pas supportées, les systèmes de fichiers que implementent les ACL dans les répertoire, comme le ReiserFS, soient visibles. Il faut quand même que les droits de permission de ces répertoires soient configurés de façon à ce que les utilisateurs ne peuvent pas changer les informations de ces répertoire (ce qui mettrait en péril le système d'ACL). Avec le système de fichier ext2 et ext3, si on efface les fichiers avec contenant des ACL avec un noyau qui ne supporte les ACL, les ACL ne seront pas effacés, alors, on doit exécuter manuellement la vérification du système de fichiers pour le mettre à jour. 
+ 	
+Aussi le mécanisme d'héritage pour un noyau ne supportant pas les ACL ne marchera pas. 
+
+\subsection*{Copie de Sécurité}
+
+Un aspect très important et habituellement oublié est la copie de sécurité. Les outils comme \emph{cpio} et \emph{tar} ne connaissent pas les ACL. Cela veut dire qu'on perdra les information des ACL, si on en fait ces opérations avec ces outils car on perdra les EAs.
+
+Une format appelé \emph{pax (Portable Archive Interchange)} a été défini pour POSIX pour résoudre ce problème. L'outil \emph{pax} peut comprendre les formats de \emph{cpio} et \emph{tar} et aussi le nouveaux format \emph{pax}. Ce nouveau format possède les \emph{extended headers} qui peuvent décrire les EAs. L'outil \emph{tar} peut le lire par contre il va perdre les informations des ACL. 
+
+On peut aussi utiliser \emph{getfacl} et \emph{setfacl} comme des outils pour faire des copie de droits d'accès, par contre, leur utilisation n'est pas pratique. Si on désire effectuer une copie de sécurité complète ces outils sont adéquat mais pas pour quelques fichiers. 
+
+\section{Implèmentassions}
  
 %il faut ajouter references
 Les ACLs sont fréquemment implémentées comme des extensions du noyau, c'est à dire des modules un système LINUX. L'objectif de cette section est d'expliquer de manière globale l'implémentions des ACL. 
@@ -233,11 +263,20 @@ Comme le ReiserFs peut facilement manipuler des petits fichiers, les EA peuvent 
 Le système ReiserFS n'implémente pas le partage d'attributs mais la création d'une extension pour le gérer est possible. La taille individuelle des attributs est limitée à 64Kb.
 
 \section*{Système de fichiers à distance}
-%@@
+
+Dans le contexte des système de fichier à distance nouveau complication Arrive. 
+
+\subsubsection*{NFS}
+
+%Comment les acl march avec nfs
+% les different version et problemes
+% le probleme de securite
+% le appel rpc ACESS
+
+
 \subsubsection*{Samba}
 %@@
-\subsubsection*{NFS}
-%@@
+
 
 \section{ACL en use}
 
@@ -445,28 +484,6 @@ Pour les fichiers cela arrive aussi. La commande \emph{touch} utilise le \emph{m
 
 Enfin, aucune permission n'a été écrasée dans le groupe classe, cependant, la masque a été appliqué. Cette politique s'assure que par exemple les application comme les compilateurs peuvent fonctionner avec les ACL même s'ils ne supportent ce mécanisme. Ils peuvent créer des fichiers avec des permissions restreintes et ensuite donner les permissions d'exécution et sans que les groupes et autres permissions ne soient affectés.
 
-
-\section*{Problèmes}
-
-\subsection*{Compatibilité}
-
-Il y deux situations qui problèmes qui être considérés quand on désire ajouter de nouvelles fonctionnalitées aux systèmes de fichiers (et donc au noyau): la mise à jour et comment un système qui n'a pas été mis à jour répond.
-Aussi il faut s'il on a besoin d'un noyau plus léger, par exemple pour démarré le système de récupération, pouvoir désactiver les EAs. 
-
-Quand on ajoute le support des ACL, tous les systèmes de fichiers qui n'on pas les ACL activées on a mécanisme de mise en place de leur support au moment du montage ou de manière automatique dans le première utilisation des EAs. 
-
-On désire que les anciennes versions du noyau continent à marcher bien qu'il possède un système de fichier comportant des ACL. Dans un noyau où les ACL ne sont pas supportées, les systèmes de fichiers que implementent les ACL dans les répertoire, comme le ReiserFS, soient visibles. Il faut quand même que les droits de permission de ces répertoires soient configurés de façon à ce que les utilisateurs ne peuvent pas changer les informations de ces répertoire (ce qui mettrait en péril le système d'ACL). Avec le système de fichier ext2 et ext3, si on efface les fichiers avec contenant des ACL avec un noyau qui ne supporte les ACL, les ACL ne seront pas effacés, alors, on doit exécuter manuellement la vérification du système de fichiers pour le mettre à jour. 
- 	
-Aussi le mécanisme d'héritage pour un noyau ne supportant pas les ACL ne marchera pas. 
-
-\subsection*{Copie de Sécurité}
-
-Un aspect très important et habituellement oublié est la copie de sécurité. Les outils comme \emph{cpio} et \emph{tar} ne connaissent pas les ACL. Cela veut dire qu'on perdra les information des ACL, si on en fait ces opérations avec ces outils car on perdra les EAs.
-
-Une format appelé \emph{pax (Portable Archive Interchange)} a été défini pour POSIX pour résoudre ce problème. L'outil \emph{pax} peut comprendre les formats de \emph{cpio} et \emph{tar} et aussi le nouveaux format \emph{pax}. Ce nouveau format possède les \emph{extended headers} qui peuvent décrire les EAs. L'outil \emph{tar} peut le lire par contre il va perdre les informations des ACL. 
-
-On peut aussi utiliser \emph{getfacl} et \emph{setfacl} comme des outils pour faire des copie de droits d'accès, par contre, leur utilisation n'est pas pratique. Si on désire effectuer une copie de sécurité complète ces outils sont adéquat mais pas pour quelques fichiers. 
-
 \subsection*{Conclusion}
 %VOIR
 C'est suivant dans une grande nombre d'aires dans l'informatique que l'addiction de quelque fonctions, même que parfois nécessaires, résoudre dans une augmentation de complexité et apportent quelques nouveaux problèmes. 
@@ -475,12 +492,7 @@ Les ACL POSIX dans le monde UNIX sont un exemple de ce comportement. Elles se tr
 
 Dans la plupart des besoin associé au contrôle de permission pour les utilisateurs, le modèle traditionnel se fait suffisant, alors, il faudrait qu'on sache quand serais nécessaire l'utilisation de ce modelé étendu. 
 
-  
-
-
-
-% Pros and Cons ACL
-% N'utiliser pas 
+\newpage
 
 \begin{thebibliography}{9}
  
@@ -527,4 +539,7 @@ Dans la plupart des besoin associé au contrôle de permission pour les utilisat
 
 \end{thebibliography}
 
+
 \end{document}
+
+

@@ -1,23 +1,9 @@
-all: clean article 
-	rm -f rapport-draft.tex rapport-original.tex rapport-two.tex
-	mv rapport-original.pdf rapport.pdf
+all: clean
+	latex rapport.tex
+	makeindex rapport.tex
+	latex rapport.tex
+	latex rapport.tex
 	xpdf rapport.pdf
-
-article:
-	cat header rapport.tex > rapport-original.tex
-	pdflatex rapport-original.tex
-	pdflatex rapport-original.tex
-
-draft:
-	cat draft-header rapport.tex > rapport-draft.tex
-	pdflatex rapport-draft.tex
-	pdflatex rapport-draft.tex
-
-
-twocolumn:
-	cat header-two rapport.tex > rapport-two.tex	
-	pdflatex rapport-two.tex
-	pdflatex rapport-two.tex
 
 clean:
 	rm -f *.log *.aux rapport-draft.pdf rapport-two.pdf
