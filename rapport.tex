@@ -11,9 +11,6 @@
 \usepackage{algorithmic}
 \usepackage{algorithm}
 
-%Index
-\usepackage{makeidx}	
-\makeindex
 
 %Info
 \title{\textbf{Contrôle d'accès e le POSIX Access Control Lists(ACL)} \\ CS435 - Administration de Système }
@@ -24,10 +21,10 @@
 
 \maketitle
 \newpage
-\printindex
+\tableofcontents
+\newpage
 
-
-\section*{Introduction}
+\section{Introduction}
 %Problème et solution plus simple
 Quand on désire contrôler l'accès aux données dans un système de fichiers, il y a plusieurs moyens d’y parvenir. Par défaut, les systèmes POSIX (Portable Operation System Interface)\cite{ieee1,ieee2} ont un mécanisme qui permet d’associer chaque entité avec un ensemble de règles, lequel est composé par une séquence d'octet qui exprime les droits du propriétaire, de son groupe et des autres utilisateurs.
 
@@ -49,7 +46,7 @@ Après cette publication, des systèmes UNIX appelés "\emph{trusted}" (Trusted 
  
 Les ACL sont une évolution du système de permissions traditionnel présent dans pratiquement tous les systèmes UNIX, alors, avant d'expliquer les ACL on va d'abord parler du modèle traditionnel.
  
-\subsection*{Système de permissions traditionnel}
+\subsection{Système de permissions traditionnel}
  
 %Les groups et les permissions
 Le modèle traditionnel POSIX offre trois classes d'utilisateurs qui sont: le propriétaire (\emph{owner}), le groupe propriétaire (\emph{group}) et les autres utilisateurs (\emph{others}). Chaque groupe a un octet que indique les permissions de lecture (\emph{\textbf{r}ead}), d'écriture (\emph{\textbf{w}rite}) et d'exécution (\emph{e\textbf{x}ecute}).
@@ -60,7 +57,7 @@ Après les trois octets peut venir le \emph{Set User Id}, \emph{Set Group Id} et
 %Le droit du root
 Seul le \emph{root} peut créer les groupes et changer les associations de groupes. Il peut aussi changer les propriétaires.
  
-\subsection*{Les ACL}
+\subsection{Les ACL}
  
 %Definitions de base
 Chaque ACL est une ensemble de règles d'accès. Dans une modèle de sécurité utilisant les ACL, si une entité fait une requête pour accéder aux données, il faut consulter les la liste d'ACL pour savoir si nous avons la permission pour l'opération demandé. Les règles possibles peuvent être consultées dans le tableau ci-dessous(\ref{entree}).
@@ -136,7 +133,7 @@ Masque & mask::rw- & rw-\\
 
 Par être consistent, dans une application que utilise les ACL étendu, le permission du groupe propriétaire est toujours calculée comme la union entre le permission de ce groupe e la masque.  
  
-\subsection*{Algorithme de vérification}
+\subsection{Algorithme de vérification}
  
 Pour vérifier les droits d'accès d'une objet du système de fichier, il y a une algorithme assez simple.
  
@@ -179,7 +176,7 @@ l'accès est autorisé
 \end{algorithm}
  
  
-\subsection*{Héritage mécanisme}
+\subsection{Héritage mécanisme}
 \label{sec:heritage}
  
 Le système POSIX règle non seulement les droits d'accès aux objets du système de fichiers, mais aussi le mécanisme d'Héritage. Les ACL sont partagés en deux types, les 
@@ -194,9 +191,9 @@ Chaque \emph{system call} qui crée les objets du système de fichier a un \emph
  
 Le système traditionnel a une commande pour désigner les modes de permissions par défaut pour les nouveaux fichiers et répertoires: le commande \emph{umask}. Quand il n'y a aucune ACL par défaut, la permission effective est déterminé par le \emph{mode parameter} moins les permissions configurés avec \emph{umask}.
 
-\section*{Problèmes}
+\section{Problèmes}
 
-\subsection*{Compatibilité}
+\subsection{Compatibilité}
 
 Il y deux situations qui problèmes qui être considérés quand on désire ajouter de nouvelles fonctionnalitées aux systèmes de fichiers (et donc au noyau): la mise à jour et comment un système qui n'a pas été mis à jour répond.
 Aussi il faut s'il on a besoin d'un noyau plus léger, par exemple pour démarré le système de récupération, pouvoir désactiver les EAs. 
@@ -207,7 +204,7 @@ On désire que les anciennes versions du noyau continent à marcher bien qu'il p
  	
 Aussi le mécanisme d'héritage pour un noyau ne supportant pas les ACL ne marchera pas. 
 
-\subsection*{Copie de Sécurité}
+\subsection{Copie de Sécurité}
 
 Un aspect très important et habituellement oublié est la copie de sécurité. Les outils comme \emph{cpio} et \emph{tar} ne connaissent pas les ACL. Cela veut dire qu'on perdra les information des ACL, si on en fait ces opérations avec ces outils car on perdra les EAs.
 
@@ -233,7 +230,7 @@ Dans le monde linux, ajouter le support aux ACL en les implémentant avec des EA
  
 Chaque système de fichier a une différent implémentation pour les EAs. On peut penser qu'une solution partagée pour l'ensemble des systèmes pourrait être plus efficace. Par exemple, si on prend une solution simple où chaque objet du système de fichiers a les EAs, un répertoire avec un fichier qui a le clés EA comment le nom et le contenu comment le valeur. Cette implémentation consommerait beaucoup de espace, étant donne que les blocks du système de fichier seront gaspilles pour conserver petit morceaux de donne, aussi ce solution perdrait les temps pour chercher ces information a chaque accès de fichier. Aux frais de ces problèmes chaque système tire profit de ces qualités pour ajouter le supporte aux EAs.
  
-\subsubsection*{Ext (2,3 et 4)}
+\subsubsection{Ext (2,3 et 4)}
  
 Les ACL dans Ext suivent le principe linux: "La solution la plus simple qui marche" et pour cette raison subviennent quelques limitations. D'autres solutions existent, par contre, elle sont difficiles à ajouter au noyau de manière satisfaisante\cite{ext_acl}.
  
@@ -244,17 +241,17 @@ Le mécanisme a aussi une optimisation. Deux fichiers avec le même ensemble de 
 Aussi une limitation est imposée: toutes les données des EAs d'un fichier doivent occuper un bloc d'EAs ayant une taille de 1, 2 ou 4 KBs.
  
  
-\subsubsection*{JFS}
+\subsubsection{JFS}
  
 Dans JFS, les EAs sont ajoutées dans une liste consécutive de blocs contigus (un entent).  Cela veut dire que chaque paire (nom,valeur) est gardée en séquence et que chaque valeur de la paire ne peut pas être plus grande que 64kb. Si les EAs sont assez petites, elles pourrons être gardées dans le même lieu que les informations du fichier. De ce façon, il n'y a pas les limitations d'ext3.
  
-\subsubsection*{XFS}
+\subsubsection{XFS}
 XFS est le système de fichiers le plus simple pour implémenter les EA. Les paires d'EA de petite tailles sont stockées directement dans l'inode, celles de taille moyenne sont stockées dans les blocs feuilles de l'arbre binaire et pour celle de grande taille, dans un arbre binaire complet.
 
 XFS peut configurer la taille de sa table d'inodes. La taille minimale est de 256 octet et la taille maximale peut aller jusqu'à la moitié des blocs du système de fichier. Dans le cas où on a une table de taille minimale, celle-ci n'est pas assez grande pour accueillir les ACLs. On doit alors les stocker de manière externe dans l'arbre binaire. Si on augmente la taille de la table les ACL pourront y être stockées. Les ACL étant très souvent interrogées par le système, cela augmente les performances en terme de temps d'accès au détriment de l'espace disque qu'elles consomment.
 XFS n'a pas de mécanisme de partage des attributs. La taille individuelle des attributs est limitée à 64Kb.
  
-\subsubsection*{ReiserFS}
+\subsubsection{ReiserFS}
 
 ReiserFS support le \emph{tail merging} qui permet à plusieurs fichiers de partager le même bloc pour stocker leurs données. Cela rend le système très efficace pour s'il on possède de nombreux fichiers de petite taille. De l'autre côte cette technique consomme beaucoup de ressources CPU. 
 	
@@ -262,11 +259,11 @@ Comme le ReiserFs peut facilement manipuler des petits fichiers, les EA peuvent 
 
 Le système ReiserFS n'implémente pas le partage d'attributs mais la création d'une extension pour le gérer est possible. La taille individuelle des attributs est limitée à 64Kb.
 
-\section*{Système de fichiers à distance}
+\section{Système de fichiers à distance}
 
 Dans le contexte des système de fichier à distance nouveau complication Arrive. 
 
-\subsubsection*{NFS}
+\subsubsection{NFS}
 
 %Comment les acl march avec nfs
 % les different version et problemes
@@ -274,7 +271,7 @@ Dans le contexte des système de fichier à distance nouveau complication Arrive
 % le appel rpc ACESS
 
 
-\subsubsection*{Samba}
+\subsubsection{Samba}
 %@@
 
 
@@ -297,7 +294,7 @@ Le système de exploitation Mac OSX (10.6.2 Snow Leopard au moment où ces ligne
 	\label{fig:img_mac-acl}
 \end{figure}
 
-\subsection*{Utiliser les ACL sous Linux}
+\subsection{Utiliser les ACL sous Linux}
 
 
 %References 
@@ -316,7 +313,7 @@ user@ubuntu:$ sudo mount /home -o remount
 
 \end{verbatim}
 
-\subsection*{Ajouter les ACL aux fichiers}
+\subsection{Ajouter les ACL aux fichiers}
 
 On peut utiliser le commande 'ls -la' pour regarde les permissions. Si un fichier contient information de sécurité avancée (comme les ACL) on va voir le caractère '+', comme dans la sortie du command 'ls' ci-dessous (\ref{verb:ls}). Un fichier avec devant une '@' veut dire que le fichier contient EAs. 
 
@@ -359,7 +356,7 @@ Aussi il y a la commande \emph{setfacl} pour modifier, ou ajouter des permission
 setfacl -m user:fabsn:r-x repertoire
 \end{verbatim}
 
-\subsection*{Exemple ACL d'accès}
+\subsection{Exemple ACL d'accès}
 
 Voici un exemple d'utilisation que l'on peut trouver dans l'article d'Andreas Gruembacher\cite{aclsuse}.
 
@@ -440,7 +437,7 @@ other::---
 
 Cet exemple montre que les changements effectués avec la commande \emph{chmod} ne détruises pas les ACL. Les opérations sont complètement réversibles et les permissions d'avant et d'après les deux opérations sont les mêmes: c'est une caractéristique très importante des ACL POSIX. 
 
-\subsection*{Exemple des ACL par défaut}
+\subsection{Exemple des ACL par défaut}
 
 Avec l'argument -d, on peut afficher les ACL par défaut d'un répertoire. 
 
@@ -484,7 +481,7 @@ Pour les fichiers cela arrive aussi. La commande \emph{touch} utilise le \emph{m
 
 Enfin, aucune permission n'a été écrasée dans le groupe classe, cependant, la masque a été appliqué. Cette politique s'assure que par exemple les application comme les compilateurs peuvent fonctionner avec les ACL même s'ils ne supportent ce mécanisme. Ils peuvent créer des fichiers avec des permissions restreintes et ensuite donner les permissions d'exécution et sans que les groupes et autres permissions ne soient affectés.
 
-\subsection*{Conclusion}
+\subsection{Conclusion}
 %VOIR
 C'est suivant dans une grande nombre d'aires dans l'informatique que l'addiction de quelque fonctions, même que parfois nécessaires, résoudre dans une augmentation de complexité et apportent quelques nouveaux problèmes. 
 
