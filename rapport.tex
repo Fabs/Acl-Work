@@ -45,8 +45,8 @@ En Janvier de 1998\cite{aclsuse} le financement pour ce projet à été suspendu
 Après cette publication, des systèmes UNIX appelés "\emph{trusted}" (Trusted Solaris, Trusted Irix, Trusted AIX) ont été développés à partir du draft 17. Ces systèmes ne sont pas complètement compatibles entre eux. Heureusement aujourd'hui la plupart des systèmes UNIX et UNIX-like supportent les ACL. Ces implémentations sont usuellement compatibles avec le draft 17. Le projet TrustedBSD implémente aussi les ACL sur les système BSD. Les ACL sont apparues sur les Macs en 2003 avec la RELEASE MAC FreeBSD.
  
 Les ACL sont une évolution du système de permissions traditionnel présent dans pratiquement tous les systèmes UNIX, alors, avant d'expliquer les ACL on va d'abord parler du modèle traditionnel.
- 
-\subsection{Système de permissions traditionnel}
+
+\section{Système de permissions traditionnel}
  
 %Les groups et les permissions
 Le modèle traditionnel POSIX offre trois classes d'utilisateurs qui sont: le propriétaire (\emph{owner}), le groupe propriétaire (\emph{group}) et les autres utilisateurs (\emph{others}). Chaque groupe a un octet que indique les permissions de lecture (\emph{\textbf{r}ead}), d'écriture (\emph{\textbf{w}rite}) et d'exécution (\emph{e\textbf{x}ecute}).
@@ -57,7 +57,7 @@ Après les trois octets peut venir le \emph{Set User Id}, \emph{Set Group Id} et
 %Le droit du root
 Seul le \emph{root} peut créer les groupes et changer les associations de groupes. Il peut aussi changer les propriétaires.
  
-\subsection{Les ACL}
+\section{Les ACL}
  
 %Definitions de base
 Chaque ACL est une ensemble de règles d'accès. Dans une modèle de sécurité utilisant les ACL, si une entité fait une requête pour accéder aux données, il faut consulter les la liste d'ACL pour savoir si nous avons la permission pour l'opération demandé. Les règles possibles peuvent être consultées dans le tableau ci-dessous(\ref{entree}).
@@ -191,7 +191,7 @@ Chaque \emph{system call} qui crée les objets du système de fichier a un \emph
  
 Le système traditionnel a une commande pour désigner les modes de permissions par défaut pour les nouveaux fichiers et répertoires: le commande \emph{umask}. Quand il n'y a aucune ACL par défaut, la permission effective est déterminé par le \emph{mode parameter} moins les permissions configurés avec \emph{umask}.
 
-\section{Problèmes}
+\section{Problèmes arrivant les ACL POSIX}
 
 \subsection{Compatibilité}
 
@@ -212,7 +212,7 @@ Une format appelé \emph{pax (Portable Archive Interchange)} a été défini pou
 
 On peut aussi utiliser \emph{getfacl} et \emph{setfacl} comme des outils pour faire des copie de droits d'accès, par contre, leur utilisation n'est pas pratique. Si on désire effectuer une copie de sécurité complète ces outils sont adéquat mais pas pour quelques fichiers. 
 
-\section{Implèmentassions}
+\section{Implèmentassions des ACL POSIX}
  
 %il faut ajouter references
 Les ACLs sont fréquemment implémentées comme des extensions du noyau, c'est à dire des modules un système LINUX. L'objectif de cette section est d'expliquer de manière globale l'implémentions des ACL. 
@@ -260,22 +260,36 @@ Comme le ReiserFs peut facilement manipuler des petits fichiers, les EA peuvent 
 Le système ReiserFS n'implémente pas le partage d'attributs mais la création d'une extension pour le gérer est possible. La taille individuelle des attributs est limitée à 64Kb.
 
 \section{Système de fichiers à distance}
+%VOIR
+Dans le contexte des système de fichier à distance nouveaux complication arrive. Ce système sont usuellement une couche permettent  une système de fichier être partage dans une réseaux. Si les décision d'accès sont tous laisse au serveur, une problème de performance arrive, par contre, se quelques de ces information sont délègue aux cliente, parfois la sécurité est compromise. Il y a aussi le problème de comptabilité, quand différentes systèmes d'exploitation implementent le même protocole de système de fichier à distance. On va voir ces deux problème, une avec le NFS (Network File System) et autre avec CIFS (Common Internet File System). 
 
-Dans le contexte des système de fichier à distance nouveau complication Arrive. 
+\subsection{NFS}
+%VOIR
+Pour ajouter le support ACL au système NFS: une extension au protocole NFS permettent la manipulation des ACL à distance et une modification du algorithme de vérification de droits.
 
-\subsubsection{NFS}
+Dans la deuxième version du protocole NFS, une partie de la décision de qui a le droit d'accéder aux fichier se déroule dans le cliente. Pour une question de performance il y a une cache de fichier dans la côte cliente. L'algorithme que prend ces choix suppose que les ID (d'utilisateur et groupe) et les octets de permission sont suffisant. Ce supposition est évidement incorrect quand on a les ACL. Cette choix c'est aussi la raison de plusieurs problème de sécurité dans NFS, lorsque une ordinateur est capable de accéder le système à distance cas on a le pouvoir de \emph{root} dans cette machine, on peut tromper l'algorithme NFS a nous donner les information des autres utilisateurs donne que on peut changer notre valeur d'ID a volonté.
 
-%Comment les acl march avec nfs
-% les different version et problemes
-% le probleme de securite
-% le appel rpc ACESS
+On peut penser que la solution de ce problème doit venir du choix de une nouvelle façon de choix qui reste dans la côte cliente. Par contre, cela ne marcherais pas quand les différents serveurs implementent différents modèle de permissions. 
 
+Comme solution, le NFSv3 implement le appel RCP \emph{ACCES}, par contre, cette appel est trop lourd et pose les problème de performance même pour les système qui n'ont pas ACL, alors, dans le version trois on a le pouvoir de spécifier l'option \emph{noacl} pour désactiver le support a cette appel. 
 
-\subsubsection{Samba}
-%@@
+Le NFSv4 finalement résoudre le problème avec ces propre ACL, par contre, ces ACL ne sont pas compatible avec les POSIX ACL. Ces ACL sont disponible gratuitement pour l'entreprise Sun, depuis le trois mars de 2003 sur le site http://acl.bestbits.at/. 
 
+\subsection{Samba}
+%VOIR
+Le système de fichier \emph{NT File System} (NTFS) support les ACL d'une façon très particulière. Le protocole CIFS\cite{cifs}, utilisée pour partager les imprimants e les fichier dans une réseaux aussi supporte les ACL ajouter au NTFS. Une implementation livre (\emph{Open Source}) du CIFS s'appelle Samba et offre les service de cliente et aussi de partage de imprimants e fichiers Linux pour les utilisateurs Windows. Samba aussi permettre les ACL POSIX d'être modifier dans une système \emph{Windows}.  
 
-\section{ACL en use}
+Le modelé des ACL windows diffère beaucoup de les ACL POSIX de une façon que on trouve impossible une intégration complète. Voici une liste de les principales différences entre les deux ACL:
+
+\begin{itemize}
+	\item Les ACL windows supportant a peu prés dix différentes permissions pour chaque entré dans une ACL. Entre eux, on trouve \emph{append}, \emph{delete}, \emph{change permission},\emph{take ownership} et \emph{change ownership}.
+	\item Dans les ACL POSIX l'accès est défini pour une algorithme que cherche le \emph{matching} plus proche entre les ACL disponible. Dans le monde \emph{Windows} le permission sont cumulative, par contre, on peu les restreigne avec les entré \emph{DENY ACL}.
+	\item Il n'y a pas les entrée \emph{DENY} dans les ACL POSIX. L'unique façon de restreigne l'aces c'est pour le \emph{matching}.
+	\item Le mécanisme d'héritage dans \emph{Windows} permettre que une modification de les ACL se propage dans l'hiérarchie dessous le répertoire.
+	\item Il n'y a pas l'entrée masque dans les ACL \emph{Windows}.
+\end{itemize}
+
+\section{ACL POSIX en use}
 
 Dans cette session on verrais les uses des ACL dans les système d'aujourd'hui. 
 
@@ -294,7 +308,7 @@ Le système de exploitation Mac OSX (10.6.2 Snow Leopard au moment où ces ligne
 	\label{fig:img_mac-acl}
 \end{figure}
 
-\subsection{Utiliser les ACL sous Linux}
+\subsection{ACL dans Linux}
 
 
 %References 
@@ -312,6 +326,9 @@ UUID='gros sequence' /dev/hda6 /home ext3 rw,auto,acl 0 1
 user@ubuntu:$ sudo mount /home -o remount
 
 \end{verbatim}
+
+\section{Exemples d'utilisation}
+
 
 \subsection{Ajouter les ACL aux fichiers}
 
@@ -355,6 +372,7 @@ Aussi il y a la commande \emph{setfacl} pour modifier, ou ajouter des permission
 \begin{verbatim}
 setfacl -m user:fabsn:r-x repertoire
 \end{verbatim}
+
 
 \subsection{Exemple ACL d'accès}
 
@@ -481,7 +499,7 @@ Pour les fichiers cela arrive aussi. La commande \emph{touch} utilise le \emph{m
 
 Enfin, aucune permission n'a été écrasée dans le groupe classe, cependant, la masque a été appliqué. Cette politique s'assure que par exemple les application comme les compilateurs peuvent fonctionner avec les ACL même s'ils ne supportent ce mécanisme. Ils peuvent créer des fichiers avec des permissions restreintes et ensuite donner les permissions d'exécution et sans que les groupes et autres permissions ne soient affectés.
 
-\subsection{Conclusion}
+\section{Conclusion}
 %VOIR
 C'est suivant dans une grande nombre d'aires dans l'informatique que l'addiction de quelque fonctions, même que parfois nécessaires, résoudre dans une augmentation de complexité et apportent quelques nouveaux problèmes. 
 
@@ -533,6 +551,9 @@ Dans la plupart des besoin associé au contrôle de permission pour les utilisat
 	
 \bibitem{ext_jfs}
 	Austin Common Standards Revision Group. http://www.opengroup.org/austin/
+
+\bibitem{cifs}
+	Storage Networking Industry Association: Com- mon Internet File System Technical Reference. Technical Proposal, March 2002. http://www.snia. org/tech activities/CIFS/
 
 \end{thebibliography}
 
