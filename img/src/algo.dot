@@ -1,0 +1,31 @@
+digraph 1	{
+/*		[label="Algorithm"]
+		1 [label="non"];
+		3 [label="non"];
+		5 [label="non"];
+		7 [label="non"];
+		0 [label="(oui) match owner"];
+		2 [label="(oui) match user:name"];
+		4 [label="(oui) match group"];
+		6 [label="(oui) match user:name"];
+		p [label="proprietaire?"];
+		un [label="utilisateur nommée?"];
+		gp1 [label="pertence au groupe proprietaire?"]
+		gpn [label="pertence au groupe nommé?"]
+		p -> 0;
+		p -> 1;
+		1 -> un;
+		un -> 2;
+		un -> 3;
+		3-> gp1;
+		gp1 -> 4;
+		gp1 -> 5;
+		5-> gpn;
+		gpn -> 6;
+		gpn -> 7;*/
+		
+		
+		perm[label="est-ce qu'il l'entrée a les droits?"]
+				perm -> "(oui) l'acess est autorisé"
+				perm -> "(non) l'acess n'est pas autorisé"
+}
