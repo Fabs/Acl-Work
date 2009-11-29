@@ -85,6 +85,8 @@ run getfacl --omit-header repertoire
 example "Changement des droits pour que toutes les ACL soient effectives"
 run chmod g+w repertoire 
 run ls -dl repertoire
+run getfacl --omit-header repertoire 
+
 
 example "ACL par défaut"
 run setfacl -d -m group:admin:rwx repertoire 
