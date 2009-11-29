@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-n=0
+n=-1
 
 export COLOR_NC='\e[0m' # No Color
 export COLOR_WHITE='\e[1;37m'
@@ -29,9 +29,10 @@ example () {
 }
 
 run () {
-	echo "\e[0;31m $@ \e[0m"
+	echo "\n $ $@ \n"
 	$@
 }
+
 
 example "Installation du support des ACL..."
 run sudo aptitude install acl
@@ -40,63 +41,62 @@ run sudo aptitude install acl
 example "Modification du fstab..."
 run cat /etc/fstab
 sed s/errors=remount-ro/acl,errors=remount-ro/ /etc/fstab > /tmp/truc 
-run cp /tmp/truc /etc/fstab
+cp /tmp/truc /etc/fstab
+run grep acl --color=always /etc/fstab
+
+example "Mount le systeme de fichier avec les acl" 
 run sudo mount -n -o remount,acl /dev/sda1
 
 
-example "Trouver le ligne qui a changé"
-grep acl --color=always /etc/fstab
-
-
 example "Creating file system..."
-cd /tmp
-mkdir expose
-cd expose
-
-
-example "Creating a file..."
-touch fichier
+run cd /tmp
+run mkdir expose
+run cd expose
+run touch fichier
+run ls -la
 
 
 example "Show initial ACL"
-ls -la
-getfacl fichier
+run ls -la fichier
+run getfacl fichier
 
 
 example "Création d'un répertoire avec umask"
 # Modification du umask : 027 (qui est le complément de 750)
-umask 027
-mkdir repertoire
+run umask 027
+run mkdir repertoire
 # Affichage des droits
-ls -dl repertoire
+run ls -dl repertoire
 
 example "Affichage des ACL"
-getfacl repertoire
+run ls -dl repertoire
+run getfacl repertoire
 
 example "Ajout d'un utilisateur nommé et affichage des ACL"
-sudo setfacl -m user:userir:rwx repertoire
-getfacl --omit-header repertoire 
+run sudo setfacl -m user:userir:rwx repertoire
+run getfacl --omit-header repertoire 
 
 example "Permission ACL non effective"
-chmod g-w repertoire 
-ls -dl repertoire 
-getfacl --omit-header repertoire 
+run chmod g-w repertoire 
+run ls -dl repertoire 
+run getfacl --omit-header repertoire 
 
 
 example "Changement des droits pour que toutes les ACL soient effectives"
-chmod g+w repertoire 
-ls -dl repertoire
+run chmod g+w repertoire 
+run ls -dl repertoire
 
 example "ACL par défaut"
-#AVOIR couleurs
-setfacl -d -m group:admin:rwx repertoire 
-getfacl --omit-header repertoire 
+run setfacl -d -m group:admin:rwx repertoire 
+run getfacl --omit-header repertoire 
+run ls -dl repertoire
+
 
 example "Héritage des ACL par défaut"
-mkdir repertoire/subrep 
-getfacl --omit-header repertoire/subrep 
+run mkdir repertoire/subrep 
+run getfacl --omit-header repertoire/subrep 
 
-example "Faire la netoyage.."
+example "MERCI :-)"
 rm -Rf /tmp/expose
 sed s/acl,errors=remount-ro/errors=remount-ro/ /tmp/truc > /etc/fstab
 rm /tmp/truc
