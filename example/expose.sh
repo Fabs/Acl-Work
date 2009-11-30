@@ -76,13 +76,13 @@ example "Ajout d'un utilisateur nommé et affichage des ACL"
 run sudo setfacl -m user:userir:rwx repertoire
 run getfacl --omit-header repertoire 
 
-example "Permission ACL non effective"
+example "Modification avec chmod"
 run chmod g-w repertoire 
 run ls -dl repertoire 
 run getfacl --omit-header repertoire 
 
 
-example "Changement des droits pour que toutes les ACL soient effectives"
+example "Remis le droits"
 run chmod g+w repertoire 
 run ls -dl repertoire
 run getfacl --omit-header repertoire 
@@ -98,7 +98,7 @@ example "Héritage des ACL par défaut"
 run mkdir repertoire/subrep 
 run getfacl --omit-header repertoire/subrep 
 
-example "MERCI :-)"
+example "Fin :-)"
 rm -Rf /tmp/expose
 sed s/acl,errors=remount-ro/errors=remount-ro/ /tmp/truc > /etc/fstab
 rm /tmp/truc
