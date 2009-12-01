@@ -2,6 +2,10 @@
                                                                      
                                                                      
                                              
+                                                                     
+                                                                     
+                                                                     
+                                             
 \documentclass{article}
 
 %Language and Encoding
@@ -74,9 +78,9 @@ Chaque ACL est une ensemble de règles d'accès. Dans une modèle de sécurité 
 \textbf{Type d'entrée} & \textbf{format} \\
   \hline
 Propriétaire & user::rwx \\
-Utilisateur nommée & user:name:rwx \\
+Utilisateur nommé & user:name:rwx \\
 Groupe propriétaire & group::rwx \\
-Groupe nommée & group:name:rwx \\
+Groupe nommé & group:name:rwx \\
 Masque & mask::rwx \\
 Autres & other::rwx \\
   \hline
@@ -124,7 +128,7 @@ On a dit que les permissions du masque sont calculées comme la limite supérieu
   \hline
 \textbf{Type} & \textbf{Format} & \textbf{Permission} \\
   \hline
-Utilisateur nommée & user:jean:r-x & r-x\\
+Utilisateur nommé & user:jean:r-x & r-x\\
   \hline
 Masque & mask::rw- & rw-\\
   \hline
@@ -357,15 +361,15 @@ Pour voir les ACL on doit utiliser la commande \emph{getfacl}. Les informations 
 \begin{verbatim}
 fabsn@vadmin:/media/esisar$ getfacl repertoire/
 # file: repertoire/
-# owner: root
-# group: root
+# owner: fabsn
+# group: users 
 user::r-x
-user:daemon:rwx
-user:bin:rwx
+user:daemon:rw-
+user:bin:rw-
 user:fabsn:rwx
-user:nobody:rwx
+user:dan:rwx
 group::r-x
-group:admin:rwx
+group:admin:-wx
 group:fabsn:rwx
 mask::rwx
 other::r-x	
@@ -386,7 +390,7 @@ On part de la création d'un répertoire avec l'application de umask de valeur 0
 
 \begin{verbatim}
 $ umask 027 
-$ mkdir dir 
+$ mkdir repertoire
 $ ls -dl repertoire
 	drwxr-x--- ... user group ... repertoire
 \end{verbatim}
@@ -441,7 +445,7 @@ other::---
 
 \end{verbatim}
 
-Si une ACL entrée contient une permission désactivé pour le masque, \emph{getfacl} ajoute un commentaire qui montre cette différence.
+Si une entrée ACL contient une permission désactivé pour le masque, \emph{getfacl} ajoute un commentaire qui montre cette différence.
 
 On va voir maintenant ce qui se passe quand on rajoute la permission. 
 
@@ -449,7 +453,7 @@ On va voir maintenant ce qui se passe quand on rajoute la permission.
 $ chmod g+w repertoire 
 $ ls -dl repertoire 
 	drwxrwx---+ ... user group ... repertoire 
-$ getfacl --omit-header repertoir 
+$ getfacl --omit-header repertoire 
 user::rwx 
 user:jean:rwx 
 group::r-x
@@ -562,4 +566,3 @@ Dans la plupart des besoins associés au contrôle de permissions pour les utili
 
 
 \end{document}
-
